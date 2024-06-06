@@ -22,7 +22,7 @@ class Test_001_Login:
     
     dot_env_filepath=os.getcwd()+'\\'+projectName+dot_env_file
     dpwork_url=readConfig.getDpWorkUrl()
-    logging=LogGen.loggen()
+    logging,log_file=LogGen.loggen()
     
     load_dotenv(dot_env_filepath)
 
@@ -45,7 +45,7 @@ class Test_001_Login:
     receiversTo=readConfig.getEmailTOReceivers()
     receiversCC=readConfig.getEmailCCReceivers()
     login_page_evidence_attachment_filepath=os.getcwd()+"\\documentation\\"+login_page_evidence_attachment
-    login_page_report_attachment_filepath=os.getcwd()+"\\reports\\"+login_page_report_attachment
+    login_page_logs_attachment_filepath=os.getcwd()+"\\logs\\"+log_file+"\\"+log_file
 
 
     def test_DpWorkLoginPageValidFieldWorker(self, setup):
@@ -237,13 +237,12 @@ class Test_001_Login:
             
             docsutil.appendContentWithPassColor(self.document,"Successfully Validated Test Case - 003 - Test DpWork Login Page for A FieldWorker with Invalid Password" )
             docsutil.saveDocument(self.document,self.loginpage_documentation_fileName)
-            self.logging.info("Evidence Document for Login Page Functionality Testing : {}".format(str(self.loginpage_documentation_fileName)))
-            print(self.login_page_evidence_attachment_filepath)
             self.logging.info(self.login_page_evidence_attachment_filepath)
-            emailUtil.sendEmail(self.emailSender,self.emailSenderPassword,self.receiversTo,self.receiversCC,self.login_page_evidence_attachment_filepath,self.login_page_report_attachment_filepath)
             self.logging.info("Email with Attachments shared via email")
 
             self.logging.info("Successfully Validated Test Case - 003 - Test DpWork Login Page for A FieldWorker with Invalid Password - Pass")
+            emailUtil.sendEmail(self.emailSender,self.emailSenderPassword,self.receiversTo,self.receiversCC,self.login_page_evidence_attachment_filepath,self.login_page_logs_attachment_filepath)
+
             assert True,"Successfully Validated Test Case - 003 - Test DpWork Login Page for A FieldWorker with Invalid Password - Pass"            
         except Exception as e:
             docsutil.appendContentWithFailColor(self.document,"Test Case - 003 - Test DpWork Login Page for A FieldWorker with Invalid Password")

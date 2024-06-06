@@ -38,4 +38,4 @@ class LogGen:
 
         logger=logging.getLogger()
         logger.setLevel(logging.INFO)
-        return logger
+        return logger,LOG_FILE

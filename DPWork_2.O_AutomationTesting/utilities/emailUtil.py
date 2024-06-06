@@ -27,21 +27,18 @@ def sendEmail(sender,emailsenderpassword,receiversTo,receiversCC, evidence_attac
         msg['Subject'] = f'DP Work Portal Automation Testing : Login Functionality - {date_str}'
         # string to store the body of the mail
         body = '''
-        <p>
-        Joyguru Team,</br></br>
-        Greetings !!
-        We have successfully validated login page functionality.
-        Please go through the attachments.
-        </br></br>
-        Regards,</br>
-        DP Works Portal Automation, Jorhat,</br>
-        Assam,</br>
-        </p>
+
+        Joyguru Team,\r\n
+        Greetings !!\r\n
+        We have successfully validated login page functionality. Please go through the attachments.\r\n
+        Regards,\r\n
+        DP Works Portal Automation, Jorhat, \r\n
+        Assam.
         '''
         #.format(str(googledrivepath))
         # attach the body with the msg instance
         #msg.attach(MIMEText(body, 'plain'))
-        msg.attach(MIMEText(body, 'html'))
+        msg.attach(MIMEText(body, 'plain'))
 
 
         # open the file to be sent
