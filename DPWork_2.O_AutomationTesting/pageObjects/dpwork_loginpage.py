@@ -15,6 +15,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class DpWorkLoginPage:
+    
+    #old Locators
     text_username_ID="mat-input-0"
     text_password_ID="mat-input-1"
     text_afterlogoutUsername_ID="mat-input-2"
@@ -31,6 +33,11 @@ class DpWorkLoginPage:
     text_NewNotifcation_Xpath='//*[contains(text(),"Kindly Click on Bell Icon (top right corner) or go to Notification History Page to view notifications")]'
     button_closeNotification_Xpath='//*[@class="mat-ripple mat-button-ripple mat-button-ripple-round"]'
     button_logout_LINKTEXT="Logout"
+    '''
+    text_username_csslocator="input[formcontrolname='email']"
+    text_password_csslocator="input[formcontrolname='password']"
+    button_loginbutton_xpath='//*[@class="login-button dp-primary-btn"]'
+    '''
 
     def __init__(self,driver):
         self.driver=driver
@@ -197,6 +204,7 @@ class DpWorkLoginPage:
         except Exception as e:
             raise CustomException(e,sys)
 
+'''
     def createDedicatedSSFolder(self,foldername):
         try:
             os.chdir(".//screenshots")
@@ -246,3 +254,4 @@ class DpWorkLoginPage:
                     os.remove(location+"//{}".format(ss))
         except Exception as e:
             raise CustomException(e,sys)
+'''
