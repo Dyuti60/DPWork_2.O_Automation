@@ -3,6 +3,9 @@ from selenium import webdriver
 import time
 import sys
 from exception import CustomException
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import StaleElementReferenceException
@@ -94,9 +97,51 @@ class DpWorkMasterSearchPage:
             self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_globalSearchByNameSearch_Xpath))
         except Exception as e:
             raise CustomException(e,sys)
-
-    def extractGlobalSearchData(self):
-        pass        
+        
+    def extractGlobalSearchData(self,driver,GlobalSearchDataExtractFilePath):
+        data=BeautifulSoup(driver.page_source,'html.parser')
+        #print(data.prettify())
+        
+        #CreateSerialNumberList
+        SNumbers=data.find_all(class_="serial-no-text")
+        SerialNumbersList=[]
+        for serialNumber in SNumbers:
+            SerialNumbersList.append(serialNumber.get_text().strip())
+        #CreateSerialNumberList
+        AllData=data.find_all(class_="cell-text")
+        AllDataList=[]
+        for d in AllData:
+            AllDataList.append(d.get_text().strip())
+        globalSearchDataframe=pd.DataFrame([AllDataList[n:n+8] for n in range(0,len(AllDataList),8)],columns=['MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Pincode','Address'])
+        globalSearchDataframe['SerialNumber']=SerialNumbersList
+        #globalSearchDataframe=pd.DataFrame(AllDataList,columns=['SerialNumberList','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Address'])
+        globalSearchDataframe=globalSearchDataframe[['SerialNumber','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Pincode','Address']]
+        globalSearchDataframe.to_csv(GlobalSearchDataExtractFilePath,header=True, index=False)
+        return globalSearchDataframe
+        '''
+        MemberStatusList=[]
+        DistrictList=[]
+        NameList=[]
+        GuardianList=[]
+        InitiationDateList=[]
+        RitwikList=[]
+        AddressList=[]
+        i=0
+        for data in AllData:
+            for i in range(8):
+                MemberStatusList.append(data.get_text().strip())
+                DistrictList.append(data.get_text().strip())
+                NameList.append(data.get_text().strip())
+                GuardianList.append(data.get_text().strip())
+                InitiationDateList.append(data.get_text().strip())
+                RitwikList.append(data.get_text().strip())
+                AddressList.append(data.get_text().strip())
+        globalSearchDataframe=pd.DataFrame(list(zip(SerialNumbersList,MemberStatusList,DistrictList,NameList,GuardianList,InitiationDateList,RitwikList,AddressList)),\
+                                           columns=['SerialNumberList','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Address'])
+        
+        '''    
+        #globalSearchDataframe.to_csv(GlobalSearchDataExtractFilePath,header=True, index=False)
+        #return globalSearchDataframe
 
     def clickKeyWordSearchTab(self):
         try:
@@ -231,13 +276,32 @@ class DpWorkMasterSearchPage:
         except Exception as e:
             raise CustomException(e,sys)
         
-    def extractKeywordSearchData(self):
-        pass
+    def extractKeywordSearchData(self,driver,KeywordSearchDataExtractFilePath):
+        data=BeautifulSoup(driver.page_source,'html.parser')
+        #print(data.prettify())
+        
+        #CreateSerialNumberList
+        SNumbers=data.find_all(class_="serial-no-text")
+        SerialNumbersList=[]
+        for serialNumber in SNumbers:
+            SerialNumbersList.append(serialNumber.get_text().strip())
+        #CreateSerialNumberList
+        AllData=data.find_all(class_="cell-text")
+        AllDataList=[]
+        for d in AllData:
+            AllDataList.append(d.get_text().strip())
+        KeywordSearchDataframe=pd.DataFrame([AllDataList[n:n+8] for n in range(0,len(AllDataList),8)],columns=['MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Pincode','Address'])
+        KeywordSearchDataframe['SerialNumber']=SerialNumbersList
+        #globalSearchDataframe=pd.DataFrame(AllDataList,columns=['SerialNumberList','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Address'])
+        KeywordSearchDataframe=KeywordSearchDataframe[['SerialNumber','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Pincode','Address']]
+        KeywordSearchDataframe.to_csv(KeywordSearchDataExtractFilePath,header=True, index=False)
+        return KeywordSearchDataframe
+
 
     def clickAreYouUpdatedTab(self):
         try:
             time.sleep(1)
-            self.click_unitil_interactable(self.driver.find_elements(By.XPATH,self.button_clickGlobalSearchTab_Xpath)[3])
+            self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_clickAreYouUpdatedTab_Xpath))
         except Exception as e:
             raise CustomException(e,sys)
         
@@ -256,7 +320,7 @@ class DpWorkMasterSearchPage:
         except Exception as e:
             raise CustomException(e,sys)
 
-    def clickAreYouUpdatedClickButton(self):
+    def clickAreYouUpdatedClearButton(self):
         try:
             time.sleep(1)
             self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_areYouUpdatedSearchClear_Xpath))

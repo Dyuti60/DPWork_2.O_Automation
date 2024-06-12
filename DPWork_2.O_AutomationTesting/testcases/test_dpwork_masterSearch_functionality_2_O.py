@@ -13,13 +13,13 @@ from utilities import XLUtils
 from utilities import docsutil
 from utilities import emailUtil
 from configurations.constants import projectName,dot_env_file
-from configurations.constants import dpwork_masterSearch_Screenshot_folder,dpwork_masterSearch_documentation_filename,masterSearch_testDataFile,masterSearchSheetName
+from configurations.constants import dpwork_masterSearch_Screenshot_folder,dpwork_masterSearch_documentation_filename,masterSearch_testDataFile,dpwork_masterSearch_documentation_filename,masterSearchGlobalSheetName,masterSearchKeywordSheetName,masterSearchAreYouUpdatedSheetName
 import time
 import os
 from configurations.constants import masterSearch_page_evidence_attachment, parametersFields,fieldValues,\
     GlobalSearchName,MemberFirstName,MemberMiddleName,MemberLastName,GuardianFirstName,GuardianMiddleName,\
     GuardianLastName,RitwikFirstName,RitwikMiddleName,RitwikLastName,Address,InitiationDate,PinCode,\
-    StateOption,DistrictOption,AreYouUpdatedFamilyCode
+    StateOption,DistrictOption,AreYouUpdatedFamilyCode,extractGlobalSearchDataFile,extractKeywordSearchDataFile,extractAreYouUpdatedDataFile
 
 
 class Test_002_MasterSearch:
@@ -48,12 +48,12 @@ class Test_002_MasterSearch:
     receiversTo=readConfig.getEmailTOReceivers()
     receiversCC=readConfig.getEmailCCReceivers()
     masterSearch_page_evidence_attachment_filepath=os.getcwd()+"\\documentation\\"+masterSearch_page_evidence_attachment
+    masterSearch_page_globalSearch_extract_filepath=os.getcwd()+"\\documentation\\"+extractGlobalSearchDataFile
+    masterSearch_page_keywordSearch_extract_filepath=os.getcwd()+"\\documentation\\"+extractKeywordSearchDataFile
+    masterSearch_page_areYouUpdatedSearch_extract_filepath=os.getcwd()+"\\documentation\\"+extractAreYouUpdatedDataFile
     masterSearch_page_logs_attachment_filepath=os.getcwd()+"\\logs\\"+log_file+"\\"+log_file
     masterSearch_testDate_FilePath=os.getcwd()+"\\DPWork_2.O_AutomationTesting\\testdata\\"+masterSearch_testDataFile
 
-    # Get Data from Excel file:
-    dataframe=XLUtils.convert_excelSheetIntoDataFrame(excelFilePath=masterSearch_testDate_FilePath,sheetName=masterSearchSheetName)
-    masterSearchTestDataDict,masterSearchfieldValues_length=XLUtils.ReturnDictionaryforselectedColumnsInDataframe(dataframe, ParameterField=parametersFields,FieldValues=fieldValues)
 
 
     def test_DpWorkMasterSearchGlobalSearch(self, setup):
@@ -66,6 +66,10 @@ class Test_002_MasterSearch:
             self.driver.get(self.dpwork_url)
             self.logging.info("Surfing to DpWork login page")
             time.sleep(2)
+
+            dataframe=XLUtils.convert_excelSheetIntoDataFrame(excelFilePath=self.masterSearch_testDate_FilePath,sheetName=masterSearchGlobalSheetName)
+            masterSearchTestDataDict,masterSearchfieldValues_length=XLUtils.ReturnDictionaryforselectedColumnsInDataframe(dataframe, ParameterField=parametersFields,FieldValues=fieldValues)
+            
             self.dplp=DpWorkLoginPage(self.driver)
             self.dpms=DpWorkMasterSearchPage(self.driver)
             self.dplp.waitForLoginPage()
@@ -104,7 +108,7 @@ class Test_002_MasterSearch:
             docsutil.addSmallHeading(self.document,"Field Worker Clicks on Global SEarch Button")
             docsutil.insertImageInDocx(self.document,ss04_location)
 
-            self.dpms.enterNameAndDoGlobalSearch(Name=list(self.masterSearchTestDataDict[MemberFirstName])[0])
+            self.dpms.enterNameAndDoGlobalSearch(Name=list(masterSearchTestDataDict[GlobalSearchName])[0])
             ss05_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Global Search','05',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters Name for global search")
             docsutil.insertImageInDocx(self.document,ss05_location)
@@ -114,7 +118,8 @@ class Test_002_MasterSearch:
             ss06_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Global Search','06',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker clicks on global search Search button")
             docsutil.insertImageInDocx(self.document,ss06_location)
-            time.sleep(3)
+            time.sleep(5)
+            globalSearchDataFrame=self.dpms.extractGlobalSearchData(self.driver, self.masterSearch_page_globalSearch_extract_filepath)
 
             self.dpms.clickGlobalSearchClearButton()
             ss07_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Global Search','07',self.driver)
@@ -133,14 +138,14 @@ class Test_002_MasterSearch:
 
             self.logging.info("Successfully Validated Test Case - 001 - Test DpWork Master Search Page -Global Search Tab - Pass")
             time.sleep(2)
-            self.driver.close()
             docsutil.appendContentWithPassColor(self.document,"Successfully Validated Test Case - 001 - Test DpWork Master Search Page -Global Search Tab")
-
+            
+            self.driver.close()
             assert True,"Successfully Validated Test Case - 001 - Test DpWork Master Search Page - Global Search Page - Pass"            
         except Exception as e:
             docsutil.appendContentWithFailColor(self.document,"Test Case - 001 - Test DpWork Master Search Page - Global Search Page")
             raise CustomException(e,sys)
-
+    
     def test_DpWorkMasterSearchKeywordSearch(self, setup):
         try:
             self.logging.info("Test Begins")
@@ -151,6 +156,10 @@ class Test_002_MasterSearch:
             self.driver.get(self.dpwork_url)
             self.logging.info("Surfing to DpWork login page")
             time.sleep(2)
+
+            dataframe=XLUtils.convert_excelSheetIntoDataFrame(excelFilePath=self.masterSearch_testDate_FilePath,sheetName=masterSearchKeywordSheetName)
+            masterSearchTestDataDict,masterSearchfieldValues_length=XLUtils.ReturnDictionaryforselectedColumnsInDataframe(dataframe, ParameterField=parametersFields,FieldValues=fieldValues)
+            
             self.dplp=DpWorkLoginPage(self.driver)
             self.dpms=DpWorkMasterSearchPage(self.driver)
             self.dplp.waitForLoginPage()
@@ -189,78 +198,78 @@ class Test_002_MasterSearch:
             docsutil.addSmallHeading(self.document,"Field Worker Clicks on Keyword Search Button")
             docsutil.insertImageInDocx(self.document,ss04_location)
 
-            self.dpms.enterMemberFirstName(memberFirstName=list(self.masterSearchTestDataDict[MemberFirstName])[0])
+            self.dpms.enterMemberFirstName(memberFirstName=list(masterSearchTestDataDict[MemberFirstName])[0])
             ss05_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','05',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters member first name for keyword search")
             docsutil.insertImageInDocx(self.document,ss05_location)
 
-            self.dpms.enterMemberMiddleName(memberMiddleName=list(self.masterSearchTestDataDict[MemberMiddleName])[0])
+            self.dpms.enterMemberMiddleName(memberMiddleName=list(masterSearchTestDataDict[MemberMiddleName])[0])
             ss06_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','06',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters member middle name for keyword search")
             docsutil.insertImageInDocx(self.document,ss06_location)
 
-            self.dpms.enterMemberLastName(memberLastName=list(self.masterSearchTestDataDict[MemberLastName])[0])
+            self.dpms.enterMemberLastName(memberLastName=list(masterSearchTestDataDict[MemberLastName])[0])
             ss07_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','07',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters member middle name for keyword search")
             docsutil.insertImageInDocx(self.document,ss07_location)
 
-            self.dpms.enterGuardianFirstName(guardianFirstName=list(self.masterSearchTestDataDict[GuardianFirstName])[0])
+            self.dpms.enterGuardianFirstName(guardianFirstName=list(masterSearchTestDataDict[GuardianFirstName])[0])
             ss08_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','08',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters guardian first name for keyword search")
             docsutil.insertImageInDocx(self.document,ss08_location)
 
-            self.dpms.enterGuardianMiddleName(guardianFirstName=list(self.masterSearchTestDataDict[GuardianMiddleName])[0])
+            self.dpms.enterGuardianMiddleName(GuardianMiddleName=list(masterSearchTestDataDict[GuardianMiddleName])[0])
             ss09_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','09',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters guardian middle name for keyword search")
             docsutil.insertImageInDocx(self.document,ss09_location)
 
-            self.dpms.enterGuardianLastName(guardianFirstName=list(self.masterSearchTestDataDict[GuardianLastName])[0])
+            self.dpms.enterGuardianLastName(guardianLastName=list(masterSearchTestDataDict[GuardianLastName])[0])
             ss10_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','10',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters guardian last name for keyword search")
             docsutil.insertImageInDocx(self.document,ss10_location)
 
-            self.dpms.enterRitwikFirstName(guardianFirstName=list(self.masterSearchTestDataDict[RitwikFirstName])[0])
+            self.dpms.enterRitwikFirstName(ritwikFirstName=list(masterSearchTestDataDict[RitwikFirstName])[0])
             ss11_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','11',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters ritwik first name for keyword search")
             docsutil.insertImageInDocx(self.document,ss11_location)
 
-            self.dpms.enterRitwikMiddleName(guardianFirstName=list(self.masterSearchTestDataDict[RitwikMiddleName])[0])
+            self.dpms.enterRitwikMiddleName(ritwikMiddleName=list(masterSearchTestDataDict[RitwikMiddleName])[0])
             ss12_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','12',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters ritwik middle name for keyword search")
             docsutil.insertImageInDocx(self.document,ss12_location)
 
-            self.dpms.enterRitwikLastName(guardianFirstName=list(self.masterSearchTestDataDict[RitwikLastName])[0])
+            self.dpms.enterRitwikLastName(ritwikLastName=list(masterSearchTestDataDict[RitwikLastName])[0])
             ss13_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','13',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters ritwik last name for keyword search")
             docsutil.insertImageInDocx(self.document,ss13_location)
 
-            self.dpms.enterInitiationDate(initiationDate=list(self.masterSearchTestDataDict[InitiationDate])[0])
+            self.dpms.enterInitiationDate(initiationDate=list(masterSearchTestDataDict[InitiationDate])[0])
             ss14_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','14',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters initiation date for keyword search")
             docsutil.insertImageInDocx(self.document,ss14_location)
 
-            self.dpms.enterAddress(address=list(self.masterSearchTestDataDict[Address])[0])
+            self.dpms.enterAddress(address=list(masterSearchTestDataDict[Address])[0])
             ss15_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','15',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker enters address for keyword search")
             docsutil.insertImageInDocx(self.document,ss15_location)
 
-            self.dpms.enterState(state=StateOption)
-            ss16_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','16',self.driver)
-            docsutil.addSmallHeading(self.document,"Field Worker selects State from dropdown for keyword search")
-            docsutil.insertImageInDocx(self.document,ss16_location)
+            #self.dpms.enterState(state=StateOption)
+            #ss16_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','16',self.driver)
+            #docsutil.addSmallHeading(self.document,"Field Worker selects State from dropdown for keyword search")
+            #docsutil.insertImageInDocx(self.document,ss16_location)
 
-            self.dpms.enterDistrict(district=DistrictOption)
-            ss17_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','17',self.driver)
-            docsutil.addSmallHeading(self.document,"Field Worker selects District from dropdown for keyword search")
-            docsutil.insertImageInDocx(self.document,ss17_location)
+            #self.dpms.enterDistrict(district=DistrictOption)
+            #ss17_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','17',self.driver)
+            #docsutil.addSmallHeading(self.document,"Field Worker selects District from dropdown for keyword search")
+            #docsutil.insertImageInDocx(self.document,ss17_location)
 
-            self.dpms.clickKeywordSearchSearchButton
+            self.dpms.clickKeywordSearchSearchButton()
             ss18_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','18',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker clicks on search button for keyword search")
             docsutil.insertImageInDocx(self.document,ss18_location)
             time.sleep(10)
 
-
+            keywordSearchExtractDataFrame=self.dpms.extractKeywordSearchData(self.driver,self.masterSearch_page_keywordSearch_extract_filepath)
             self.dpms.clickKeywordSearchClearButton()
             ss19_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','19',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker clicks on clear button to reset keyword search parameters")
@@ -285,7 +294,7 @@ class Test_002_MasterSearch:
             docsutil.appendContentWithFailColor(self.document,"Test Case - 002 - Test DpWork Master Search Page  - Keyword Search Page")
             raise CustomException(e,sys)
         
-
+    '''
     def test_DpWorkMasterAreYouUpdatedSearch(self, setup):
         try:
             self.logging.info("Test Begins")
@@ -296,12 +305,16 @@ class Test_002_MasterSearch:
             self.driver.get(self.dpwork_url)
             self.logging.info("Surfing to DpWork login page")
             time.sleep(2)
+
+
+            dataframe=XLUtils.convert_excelSheetIntoDataFrame(excelFilePath=self.masterSearch_testDate_FilePath,sheetName=masterSearchAreYouUpdatedSheetName)
+            masterSearchTestDataDict,masterSearchfieldValues_length=XLUtils.ReturnDictionaryforselectedColumnsInDataframe(dataframe, ParameterField=parametersFields,FieldValues=fieldValues)
             self.dplp=DpWorkLoginPage(self.driver)
             self.dpms=DpWorkMasterSearchPage(self.driver)
             self.dplp.waitForLoginPage()
 
             ss00_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Are You Updated','00',self.driver)
-            docsutil.addMediumHeading(self.document,"Test Case - 001 - Test DpWork Master Search Page -  - Are You Updated for A FW - Happy Path")
+            docsutil.addMediumHeading(self.document,"Test Case - 003 - Test DpWork Master Search Page -  - Are You Updated for A FW - Happy Path")
             docsutil.appendContentWithBlueColor(self.document,"DP Work Master Search Page - Are You Updated: Test Case - 001 - Begins:")
             docsutil.insertImageInDocx(self.document,ss00_location)
 
@@ -329,29 +342,27 @@ class Test_002_MasterSearch:
             docsutil.addSmallHeading(self.document,"Field Worker Clicks on Master Search Button")
             docsutil.insertImageInDocx(self.document,ss03_location)
 
-            self.dpms.clickGlobalSearchTab()
+            self.dpms.clickAreYouUpdatedTab()
             ss04_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Are You Updated','04',self.driver)
-            docsutil.addSmallHeading(self.document,"Field Worker Clicks on Global SEarch Button")
+            docsutil.addSmallHeading(self.document,"Field Worker Clicks on Are You Updated Tab")
             docsutil.insertImageInDocx(self.document,ss04_location)
 
-            self.dpms.enterNameAndDoGlobalSearch(Name=list(self.masterSearchTestDataDict[MemberFirstName])[0])
+            self.dpms.enterFCForAreYouUpdated(familyCode=list(masterSearchTestDataDict[AreYouUpdatedFamilyCode])[0])
             ss05_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Are You Updated','05',self.driver)
-            docsutil.addSmallHeading(self.document,"Field Worker enters Name for global search")
+            docsutil.addSmallHeading(self.document,"Field Worker enters Family Code for checking are you updated")
             docsutil.insertImageInDocx(self.document,ss05_location)
 
-            self.dpms.clickGlobalSearchSearchButton()
+            self.dpms.clickAreYouUpdatedSearchButton()
             time.sleep(3)
             ss06_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Are You Updated','06',self.driver)
-            docsutil.addSmallHeading(self.document,"Field Worker clicks on global search Search button")
+            docsutil.addSmallHeading(self.document,"Field Worker clicks on Are You Updated Search button")
             docsutil.insertImageInDocx(self.document,ss06_location)
             time.sleep(3)
 
-            self.dpms.clickGlobalSearchClearButton()
+            self.dpms.clickAreYouUpdatedClearButton()
             ss07_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Are You Updated','07',self.driver)
-            docsutil.addSmallHeading(self.document,"Field Worker clicks on global search Clear button")
+            docsutil.addSmallHeading(self.document,"Field Worker clicks on Are YOu Updated Clear button")
             docsutil.insertImageInDocx(self.document,ss07_location)
-
-            #self.dpms.enterMemberFirstName(memberFirstName=list(self.masterSearchTestDataDict[MemberFirstName])[0])
 
             self.dplp.clickLogoutButton()
             self.logging.info("Field Worker clicks on the logout button")
@@ -361,12 +372,15 @@ class Test_002_MasterSearch:
             docsutil.addSmallHeading(self.document,"Field Worker returns to the login page on successful log out")
             docsutil.insertImageInDocx(self.document,ss08_location)
 
-            self.logging.info("Successfully Validated Test Case - 001 - Test DpWork Master Search Page  - Are You Updated Tab - Pass")
+            self.logging.info("Successfully Validated Test Case - 003 - Test DpWork Master Search Page  - Are You Updated Tab - Pass")
             time.sleep(2)
             self.driver.close()
             docsutil.appendContentWithPassColor(self.document,"Successfully Validated Test Case - 001 - Test DpWork Master Search Page  - Are You Updated Tab")
+            docsutil.saveDocument(self.document,dpwork_masterSearch_documentation_filename)
 
-            assert True,"Successfully Validated Test Case - 001 - Test DpWork Master Search Page  - Are You Updated Page - Pass"            
+            assert True,"Successfully Validated Test Case - 003 - Test DpWork Master Search Page  - Are You Updated Page - Pass"            
         except Exception as e:
-            docsutil.appendContentWithFailColor(self.document,"Test Case - 001 - Test DpWork Master Search Page  - Are You Updated Page")
+            docsutil.appendContentWithFailColor(self.document,"Test Case - 003 - Test DpWork Master Search Page  - Are You Updated Page")
             raise CustomException(e,sys)
+
+    '''
