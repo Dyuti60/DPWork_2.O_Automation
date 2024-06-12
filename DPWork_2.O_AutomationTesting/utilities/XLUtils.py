@@ -1,5 +1,6 @@
 import openpyxl
 import sys
+import pandas as pd
 from exception import CustomException
 def createNewExcelFile(filepath):
     try:
@@ -93,3 +94,17 @@ def getDataIn2DList(file, sheetName, row, col):
         return rows
     except Exception as e:
         raise CustomException(e,sys)
+    
+
+def convert_excelSheetIntoDataFrame(excelFilePath, sheetName):
+    dataframe=pd.read_excel(excelFilePath,sheet_name=sheetName)
+    dataframe=dataframe.fillna('')
+    return dataframe
+
+def ReturnDictionaryforselectedColumnsInDataframe(dataframe, ParameterField='FieldParameters',FieldValues='FieldValues1'):
+    if FieldValues !='All':
+        dataframe=dataframe[ParameterField,FieldValues]
+    dict_data=dataframe.set_index(ParameterField).T.to_dict('list')
+    keys=str(list(dict_data.keys())[0])
+    fieldValues_length=len(dict_data[keys])
+    return dict_data,fieldValues_length

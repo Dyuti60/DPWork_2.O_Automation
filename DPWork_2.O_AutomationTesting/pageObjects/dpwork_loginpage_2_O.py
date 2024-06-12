@@ -21,6 +21,8 @@ class DpWorkLoginPage:
     button_loginbutton_xpath='//*[@class="login-button dp-primary-btn"]'
     button_logoutbutton_xpath='//*[@class="d-flex align-items-center cursor-pointer"]'
 
+    button_clickMasterSearch_Xpath='//*[@class="ml-12 sidebar-text"]'
+
 
     def __init__(self,driver):
         self.driver=driver
@@ -91,5 +93,13 @@ class DpWorkLoginPage:
             #WebDriverWait(self.driver,100).until(EC.visibility_of_element_located((By.XPATH, self.button_loginButton_Xpath)))
             time.sleep(1)
             self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_logoutbutton_xpath))
+        except Exception as e:
+            raise CustomException(e,sys)
+
+    def clickMasterSearchFromMenu(self):
+        try:
+            #WebDriverWait(self.driver,100).until(EC.visibility_of_element_located((By.XPATH, self.button_loginButton_Xpath)))
+            time.sleep(1)
+            self.click_unitil_interactable(self.driver.find_elements(By.XPATH,self.button_clickMasterSearch_Xpath)[0])
         except Exception as e:
             raise CustomException(e,sys)
