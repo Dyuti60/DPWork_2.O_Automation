@@ -19,6 +19,7 @@ class DpWorkUpdatePage:
     text_enterfamilyCode_Xpath='//*[@class="search-input dp-input-control"]'
     button_clickUpdateClearButton_Xpath='//*[@class="clr dp-secondary-btn"]'
     button_clickUpdateSearchButton_Xpath='//*[@class="src dp-primary-btn"]'
+    button_clickUpdateUpdateButton_Xpath='//*[@class="dp-primary-btn updateButton"]'
 
     def __init__(self,driver):
         self.driver=driver
@@ -38,6 +39,7 @@ class DpWorkUpdatePage:
         except Exception as e:
             raise CustomException(e,sys)
         
+    
     def enterSerialNumber(self,serialNumber):
         try:
             WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_enterfamilyCode_Xpath)))
@@ -59,6 +61,14 @@ class DpWorkUpdatePage:
             self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_clickUpdateSearchButton_Xpath))
         except Exception as e:
             raise CustomException(e,sys)
+        
+    def clickUpdateUpdateButton(self):
+        try:
+            time.sleep(1)
+            self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_clickUpdateUpdateButton_Xpath))
+        except Exception as e:
+            raise CustomException(e,sys)
+            
         
     def extractDateFetchedBySerialNumber(self):
         pass

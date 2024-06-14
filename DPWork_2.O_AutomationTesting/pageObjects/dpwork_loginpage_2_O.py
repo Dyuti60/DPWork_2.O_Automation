@@ -22,6 +22,7 @@ class DpWorkLoginPage:
     button_logoutbutton_xpath='//*[@class="d-flex align-items-center cursor-pointer"]'
 
     button_clickMasterSearch_Xpath="//*[contains(text(),'Master Search')]"
+    button_update_Xpath="//*[contains(text(),'Update')]"
     #button_clickMasterSearch_Xpath='//*[@class="ml-12 sidebar-text"]'
 
 
@@ -102,5 +103,13 @@ class DpWorkLoginPage:
             #WebDriverWait(self.driver,100).until(EC.visibility_of_element_located((By.XPATH, self.button_loginButton_Xpath)))
             time.sleep(1)
             self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_clickMasterSearch_Xpath))
+        except Exception as e:
+            raise CustomException(e,sys)
+        
+    def clickUpdateFromMenu(self):
+        try:
+            #WebDriverWait(self.driver,100).until(EC.visibility_of_element_located((By.XPATH, self.button_loginButton_Xpath)))
+            time.sleep(1)
+            self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_update_Xpath))
         except Exception as e:
             raise CustomException(e,sys)

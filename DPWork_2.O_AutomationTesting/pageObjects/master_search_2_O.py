@@ -6,6 +6,7 @@ from exception import CustomException
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
+from utilities import XLUtils
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import StaleElementReferenceException
@@ -24,6 +25,7 @@ class DpWorkMasterSearchPage:
     button_clickAreYouUpdatedTab_Xpath="//*[contains(text(),' Are you updated? ')]"
     #Global Search Tab fields Locator
     text_globalSearchByName_Xpath='//*[@class="search-input dp-input-control ng-untouched ng-pristine ng-valid"]'
+    text_globalSearchByNameTouched_Xpath='//*[@class="search-input dp-input-control ng-valid ng-dirty ng-touched"]'
     button_globalSearchByNameClear_Xpath='//*[@class="dp-secondary-btn"]'
     button_globalSearchByNameSearch_Xpath='//*[@class="bprimary dp-primary-btn"]'
     #Keyword Search Tab fields Locator
@@ -75,12 +77,18 @@ class DpWorkMasterSearchPage:
             #self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_clickGlobalSearchTab_Xpath))
         except Exception as e:
             raise CustomException(e,sys)
+        
 
-    def enterNameAndDoGlobalSearch(self,Name):
+    def enterNameAndDoGlobalSearch(self,Name,fieldValueIndex):
         try:
-            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_globalSearchByName_Xpath)))
-            self.driver.find_element(By.XPATH, self.text_globalSearchByName_Xpath).clear()
-            self.driver.find_element(By.XPATH, self.text_globalSearchByName_Xpath).send_keys(Name)
+            if fieldValueIndex ==0:
+                WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_globalSearchByName_Xpath)))
+                self.driver.find_element(By.XPATH, self.text_globalSearchByName_Xpath).clear()
+                self.driver.find_element(By.XPATH, self.text_globalSearchByName_Xpath).send_keys(Name)
+            else:
+                WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_globalSearchByNameTouched_Xpath)))
+                self.driver.find_element(By.XPATH, self.text_globalSearchByNameTouched_Xpath).clear()
+                self.driver.find_element(By.XPATH, self.text_globalSearchByNameTouched_Xpath).send_keys(Name)
         except Exception as e:
             raise CustomException(e,sys)
         
@@ -116,33 +124,52 @@ class DpWorkMasterSearchPage:
         globalSearchDataframe['SerialNumber']=SerialNumbersList
         #globalSearchDataframe=pd.DataFrame(AllDataList,columns=['SerialNumberList','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Address'])
         globalSearchDataframe=globalSearchDataframe[['SerialNumber','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Pincode','Address']]
-        globalSearchDataframe.to_csv(GlobalSearchDataExtractFilePath,header=True, index=False)
-        return globalSearchDataframe
-        '''
-        MemberStatusList=[]
-        DistrictList=[]
-        NameList=[]
-        GuardianList=[]
-        InitiationDateList=[]
-        RitwikList=[]
-        AddressList=[]
-        i=0
-        for data in AllData:
-            for i in range(8):
-                MemberStatusList.append(data.get_text().strip())
-                DistrictList.append(data.get_text().strip())
-                NameList.append(data.get_text().strip())
-                GuardianList.append(data.get_text().strip())
-                InitiationDateList.append(data.get_text().strip())
-                RitwikList.append(data.get_text().strip())
-                AddressList.append(data.get_text().strip())
-        globalSearchDataframe=pd.DataFrame(list(zip(SerialNumbersList,MemberStatusList,DistrictList,NameList,GuardianList,InitiationDateList,RitwikList,AddressList)),\
-                                           columns=['SerialNumberList','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Address'])
-        
-        '''    
         #globalSearchDataframe.to_csv(GlobalSearchDataExtractFilePath,header=True, index=False)
-        #return globalSearchDataframe
+        return globalSearchDataframe
 
+
+    def validateGlobalSearchExtract(self,dataframe,testDataGlobalSearchFilePath,testDataGlobalSearchSheet,fieldvalueIndex,GlobalSearchDataExtractFilePath):
+        try:
+            fieldvalues=XLUtils.convert_excelSheetIntoDataFrame(testDataGlobalSearchFilePath,testDataGlobalSearchSheet)
+            fieldvalues=list(fieldvalues.columns.values)[1:]
+
+            searchListInitial=XLUtils.getDataInList(testDataGlobalSearchFilePath,testDataGlobalSearchSheet,row=XLUtils.getRowCount(testDataGlobalSearchFilePath,testDataGlobalSearchSheet),col=2+int(fieldvalueIndex))
+            searchListFinal=[]
+            splittedList=[]
+            for element in searchListInitial:
+                splittedList=element.split()
+                for element in splittedList:
+                    searchListFinal.append(element)
+            searchListFinal.extend(searchListInitial)
+            globalsearchNameListLength=len(searchListFinal)
+            dataframeRowLength=dataframe.shape[0]
+            dataframeColumnLength=dataframe.shape[1]
+            dataframeColumns=dataframe.columns.values
+
+            add_list=[]
+            for rowIndex in range(dataframeRowLength):#0
+                completeRowDataSeries=dataframe.iloc[rowIndex,:]
+                fill_list=[]
+                for searchName in searchListFinal: #Dyuti
+                    for column in dataframeColumns: #'SerialNumber'
+                        if searchName.upper() in str(completeRowDataSeries[column]):
+                            fill_list.append('True')
+                if 'True' in fill_list:
+                    add_list.append('True')
+                else:
+                    add_list.append('False')
+            dataframe['Data_Validation_Status']=add_list
+            
+            GlobalSearchDataExtractFilePath=GlobalSearchDataExtractFilePath.replace('.csv','')+"_"+str(fieldvalues[fieldvalueIndex]+"_validation")+".csv"
+            dataframe.to_csv(GlobalSearchDataExtractFilePath,header=True,index=False)
+                
+            if 'False' in add_list:
+                return 'Data Validation Fails please check documentation folder, global search extract'
+            else:
+                return 'Data Validation Pass'
+        except Exception as e:
+            raise CustomException(e,sys)
+            
     def clickKeyWordSearchTab(self):
         try:
             time.sleep(1)
@@ -294,9 +321,41 @@ class DpWorkMasterSearchPage:
         KeywordSearchDataframe['SerialNumber']=SerialNumbersList
         #globalSearchDataframe=pd.DataFrame(AllDataList,columns=['SerialNumberList','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Address'])
         KeywordSearchDataframe=KeywordSearchDataframe[['SerialNumber','MemberStatus','District','MemberName','GuardianName','InitiationDate','Ritwik','Pincode','Address']]
-        KeywordSearchDataframe.to_csv(KeywordSearchDataExtractFilePath,header=True, index=False)
+        #KeywordSearchDataframe.to_csv(KeywordSearchDataExtractFilePath,header=True, index=False)
         return KeywordSearchDataframe
 
+    def validateExtractKeywordSearchData(self,dataframe,keywordSearchDataExtractFilePath,testdatakeywordSearchExcelFilePath,fieldvalueIndex,memberName,testdatakeywordSearchExcelSheetName):
+        try:
+            fieldvalues=XLUtils.convert_excelSheetIntoDataFrame(testdatakeywordSearchExcelFilePath,testdatakeywordSearchExcelSheetName)
+            fieldvalues=list(fieldvalues.columns.values)[1:]
+            searchList=XLUtils.getDataInList(testdatakeywordSearchExcelFilePath,testdatakeywordSearchExcelSheetName,row=XLUtils.getRowCount(testdatakeywordSearchExcelFilePath,testdatakeywordSearchExcelSheetName),col=2+int(fieldvalueIndex))
+            globalsearchNameListLength=len(searchList)
+            dataframeRowLength=dataframe.shape[0]
+            dataframeColumnLength=dataframe.shape[1]
+            dataframeColumns=dataframe.columns.values
+
+            add_list=[]
+            for rowIndex in range(dataframeRowLength):#0
+                completeRowDataSeries=dataframe.iloc[rowIndex,:]
+                fill_list=[]
+                for searchName in searchList: #Dyuti
+                    for column in dataframeColumns: #'SerialNumber'
+                        if searchName.upper() in str(completeRowDataSeries[column]):
+                            fill_list.append('True')
+                if 'True' in fill_list:
+                    add_list.append('True')
+                else:
+                    add_list.append('False')
+            dataframe['Data_Validation_Status']=add_list
+            
+            keywordSearchDataExtractFilePath=keywordSearchDataExtractFilePath.replace('.csv','')+"_"+str(memberName)+"_"+str(fieldvalues[fieldvalueIndex])+"_validation.csv"
+            dataframe.to_csv(keywordSearchDataExtractFilePath,header=True,index=False)
+            if 'False' in add_list:
+                return 'Data Validation Fails please check documentation folder, keyword search extract'
+            else:
+                return 'Data Validation Pass'
+        except Exception as e:
+            raise CustomException(e,sys)
 
     def clickAreYouUpdatedTab(self):
         try:
@@ -327,5 +386,105 @@ class DpWorkMasterSearchPage:
         except Exception as e:
             raise CustomException(e,sys)
         
-    def extractAreYouUpdatedData(self):
-        pass
+    def extractAreYouUpdatedData(self,driver,AreYouUpdatedDataExtractFilePath):
+        data=BeautifulSoup(driver.page_source,'html.parser')
+        #print(data.prettify())
+
+        #CreateAllDataList
+        AllData=data.find_all(class_="cell-text")
+        AllDataList=[]
+        for d in AllData:
+            AllDataList.append(d.get_text().strip())
+        AreYouUpdatedDataframe=pd.DataFrame([AllDataList[n:n+6] for n in range(0,len(AllDataList),6)],columns=['SerialNumber','MemberName','Status','State','District','LastIstravrityDate'])
+
+        #AreYouUpdatedDataframe.to_csv(AreYouUpdatedDataExtractFilePath,header=True, index=False)
+        return AreYouUpdatedDataframe
+    
+    def validateAreYouUpdatedSearchExtract(self,dataframe,testDataAreYouUpdatedFilePath,testDataAreYouUpdatedSheet,fieldvalueIndex,AreYouUpdatedDataExtractFilePath):
+        try:
+            fieldvalues=XLUtils.convert_excelSheetIntoDataFrame(testDataAreYouUpdatedFilePath,testDataAreYouUpdatedSheet)
+            fieldvalues=list(fieldvalues.columns.values)[1:]
+            searchListInitial=XLUtils.getDataInList(testDataAreYouUpdatedFilePath,testDataAreYouUpdatedSheet,row=XLUtils.getRowCount(testDataAreYouUpdatedFilePath,testDataAreYouUpdatedSheet),col=2+int(fieldvalueIndex))
+            splittedList=[]
+            for element in searchListInitial:
+                if ' ' in element:
+                    splittedList=element.split()
+                searchListInitial.extend(splittedList)
+            searchList=set(searchListInitial)
+            searchList=list(searchList)
+            globalsearchNameListLength=len(searchList)
+            dataframeRowLength=dataframe.shape[0]
+            dataframeColumnLength=dataframe.shape[1]
+            dataframeColumns=dataframe.columns.values
+
+            add_list=[]
+            for rowIndex in range(dataframeRowLength):#0
+                completeRowDataSeries=dataframe.iloc[rowIndex,:]
+                fill_list=[]
+                for searchName in searchList: #Dyuti
+                    for column in dataframeColumns: #'SerialNumber'
+                        if searchName.upper() in str(completeRowDataSeries[column]):
+                            fill_list.append('True')
+                if 'True' in fill_list:
+                    add_list.append('True')
+                else:
+                    add_list.append('False')
+            dataframe['Data_Validation_Status']=add_list
+            
+            AreYouUpdatedDataExtractFilePath=AreYouUpdatedDataExtractFilePath.replace('.csv','')+"_"+str(fieldvalues[fieldvalueIndex]+"_validation")+".csv"
+            dataframe.to_csv(AreYouUpdatedDataExtractFilePath,header=True,index=False)
+            if 'False' in add_list:
+                return 'Data Validation Fails please check documentation folder, global search extract'
+            else:
+                return 'Data Validation Pass'
+        except Exception as e:
+            raise CustomException(e,sys)
+
+
+    def getSerialNumberAndMemberForAllStatusTypes(self, dataframe):
+        FWPendingDataFrame=dataframe[dataframe['MemberStatus']=='FW Pending']
+        FWPendingDataFrame=FWPendingDataFrame[['SerialNumber','MemberName']]
+        if len(FWPendingDataFrame) !=0:
+            FWPendingDict=FWPendingDataFrame.iloc[1,:].to_dict()
+        else:
+            FWPendingDict='Null'
+
+        DAApprovedDataframe=dataframe[dataframe['MemberStatus']=='DA Approved']
+        DAApprovedDataframe=DAApprovedDataframe[['SerialNumber','MemberName']]
+        if len(DAApprovedDataframe) !=0:
+            DAApprovedDict=DAApprovedDataframe.iloc[1,:].to_dict()
+        else:
+            DAApprovedDict='Null'
+        
+
+        FWCompletedDataframe=dataframe[dataframe['MemberStatus']=='FW Completed']
+        FWCompletedDataframe=FWCompletedDataframe[['SerialNumber','MemberName']]
+        if len(FWCompletedDataframe) !=0:
+            FWCompletedDict=FWCompletedDataframe.iloc[1,:].to_dict()
+        else:
+            FWCompletedDict='Null'
+        
+
+        DARejectedDataframe=dataframe[dataframe['MemberStatus']=='DA Rejected']
+        DARejectedDataframe=DARejectedDataframe[['SerialNumber','MemberName']]
+        if len(DARejectedDataframe) !=0:
+            DARejectedDict=DARejectedDataframe.iloc[1,:].to_dict()
+        else:
+            DARejectedDict='Null'
+        
+
+        SURejectedDataframe=dataframe[dataframe['MemberStatus']=='SU Rejected']
+        SURejectedDataframe=SURejectedDataframe[['SerialNumber','MemberName']]
+        if len(SURejectedDataframe) !=0:
+            SURejectedDict=SURejectedDataframe.iloc[1,:].to_dict()
+        else:
+            SURejectedDict='Null'
+
+        SUApprovedDataframe=dataframe[dataframe['MemberStatus']=='SU Approved']
+        SUApprovedDataframe=SUApprovedDataframe[['SerialNumber','MemberName']]
+        if len(SUApprovedDataframe) !=0:
+            SUApprovedDict=SUApprovedDataframe.iloc[1,:].to_dict()
+        else:
+            SUApprovedDict='Null'
+
+        return FWPendingDict,DAApprovedDict,FWCompletedDict,DARejectedDict,SURejectedDict,SUApprovedDict
