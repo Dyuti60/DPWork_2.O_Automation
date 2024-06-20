@@ -20,6 +20,17 @@ class DpWorkUpdatePage:
     button_clickUpdateClearButton_Xpath='//*[@class="clr dp-secondary-btn"]'
     button_clickUpdateSearchButton_Xpath='//*[@class="src dp-primary-btn"]'
     button_clickUpdateUpdateButton_Xpath='//*[@class="dp-primary-btn updateButton"]'
+    
+
+    #Update:
+    button_clickSubmitDPNFButton_Xpath='//*[@class="dp-primary-btn updateButton"]'
+    text_suggestedMemberName_CSSSelector='input[formcontrolname="memberName"]'
+    text_suggestedGuardianName_CSSSelector='input[formcontrolname="gurdianName"]'
+    text_suggestedRitwikName_CSSSelector='input[formcontrolname="ritwikName"]'
+
+    button_clickPersonalInforNextButton_Xpath='//*[@class="personal-next dp-primary-btn"]'
+    button_clickPersonalQuitUpdation_Xpath='//*[@class="quit-update"]'
+
 
     def __init__(self,driver):
         self.driver=driver

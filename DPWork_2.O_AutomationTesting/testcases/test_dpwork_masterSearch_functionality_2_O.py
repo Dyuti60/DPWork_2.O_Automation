@@ -80,7 +80,8 @@ class Test_002_MasterSearch:
 
             dataframe=XLUtils.convert_excelSheetIntoDataFrame(excelFilePath=self.masterSearch_testDate_FilePath,sheetName=masterSearchGlobalSheetName)
             masterSearchTestDataDict,masterSearchfieldValues_length=XLUtils.ReturnDictionaryforselectedColumnsInDataframe(dataframe, ParameterField=parametersFields,FieldValues=fieldValues)
-            
+            self.logging.info("Data taken from Test Data file")
+
             self.dplp=DpWorkLoginPage(self.driver)
             self.dpms=DpWorkMasterSearchPage(self.driver)
             self.dplp.waitForLoginPage()
@@ -103,6 +104,7 @@ class Test_002_MasterSearch:
 
             self.dplp.clickLoginButton()
             self.logging.info("Click on login button")
+            self.logging.info("Member clicks on login button")
             time.sleep(2)
 
             ss02_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Global Search','02',self.driver)
@@ -110,11 +112,13 @@ class Test_002_MasterSearch:
             docsutil.insertImageInDocx(self.document,ss02_location)
 
             self.dplp.clickMasterSearchFromMenu()
+            self.logging.info("Member clicks on Master Seach from Button from the menu")
             ss03_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Global Search','03',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker Clicks on Master Search Button")
             docsutil.insertImageInDocx(self.document,ss03_location)
 
             self.dpms.clickGlobalSearchTab()
+            self.logging.info("Member clicks on global search tab from the Master Search Page")
             ss04_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Global Search','04',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker Clicks on Global SEarch Button")
             docsutil.insertImageInDocx(self.document,ss04_location)
@@ -125,6 +129,7 @@ class Test_002_MasterSearch:
             for fieldValueIndex in range(len(fieldvalues)):
                 globalSearchName=XLUtils.readData(self.testDataGlobalSearchFilePath,self.testDataGlobalSearchSheet,rownum=2,colnum=fieldValueIndex+2)
                 self.dpms.enterNameAndDoGlobalSearch(Name=str(globalSearchName),fieldValueIndex=fieldValueIndex)
+                self.logging.info("Member enters name in global search text search area")
                 ss05_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Global Search','05',self.driver)
                 docsutil.addSmallHeading(self.document,"Field Worker enters Name for global search")
                 docsutil.insertImageInDocx(self.document,ss05_location)

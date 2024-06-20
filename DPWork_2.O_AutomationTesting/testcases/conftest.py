@@ -37,8 +37,8 @@ def browser(request):  # This will return the Browser value to setup method
 # It is hook for Adding Environment info to HTML Report
 def pytest_configure(config):
     config._metadata = {
-        "Tester": "Amar",
-        "Project Name": "Hybrid Framework Practice",
+        "Tester": "Dyuti",
+        "Project Name": "DP Work 2.0",
         }
 
 
