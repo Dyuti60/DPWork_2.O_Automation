@@ -1,0 +1,8 @@
+[32mINFO    [0m root:test_dpwork_addToDpnf.py:63 Test Begins
+[32mINFO    [0m root:test_dpwork_addToDpnf.py:65 Driver Initiated
+[32mINFO    [0m root:test_dpwork_addToDpnf.py:69 Surfing to DpWork login page
+[32mINFO    [0m root:test_dpwork_addToDpnf.py:74 Data taken from Test Data file
+[32mINFO    [0m root:test_dpwork_addToDpnf.py:86 Username Entered- kolkata@test.com
+[32mINFO    [0m root:test_dpwork_addToDpnf.py:88 Corresponding Password Entered
+[32mINFO    [0m root:test_dpwork_addToDpnf.py:97 Click on login button
+[32mINFO    [0m root:test_dpwork_addToDpnf.py:98 Member clicks on login button
