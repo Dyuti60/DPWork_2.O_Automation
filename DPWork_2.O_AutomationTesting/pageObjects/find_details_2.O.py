@@ -15,6 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 class FindDetails:
+    check_FindDetailsPageTitle_Xpath='//span[@class="details-text" and contains(text(),"Find details")]'
     click_AssignedTabFromTopFindDetails_Xpath='//*[contains(@class,"dp-chip ng-star-inserted") and contains(text(),"Assigned List")]'
     click_TransferRequestsFromTopFindDetails_Xpath='//*[@class="" and contains(text(),"Transfer Requests")]'
     click_NotFoundListFromTopFindDetails_Xpath='//*[@class="" and contains(text(),"Not Found List")]'
@@ -33,6 +34,7 @@ class FindDetails:
 
     tableColValue_exteriorTableData_Tag='td'
     tableColValue_interiorTableData_Xpath='//span[@class="table-data-text")]'
+    tableColValue_interiorTableDataFamilyCodeOnly_Xpath='//span[@class="fc-text")]'
 
     click_4DoneButton_Xpath='//button[@class="save-button dp-primary-btn ng-star-inserted" and contains(text(),"Done")]'
     click_close4SuccessMessage_Xpath='//*[@class="close-button"]'
@@ -45,14 +47,33 @@ class FindDetails:
     button_createNewWishlist_Xpath='//*[@class="ms-1" and contains(text(),"Create new")]'
     MemberName=''
     check_AddToWishlistSuccessMessage_Xpath="//*[contains(text(),'Datum added to wishlist '{}' successfully!') and contains(text(),'Your can access all wish-lists from the ‘My wishlists’') ]".format(MemberName)
+    click_EditDeleteWishlistButton_Xpath="//*[@class='icon-img']"
+    getName_wishlistTobeDeletedOrEdited_Xpath='//*[@class="icon-img"]//..//..//span[@class="item-text"]'
+    click_closeButtonOfWishlistWindow_Xpath="//*[@class='img-container']"
+
+    click_migrateStateDistrictPincode_123_Dropdown_Xpath='//*[@id="state"]'
+    getAll_migrateState_Options="//*[@contains(@id,'mat-option')]"
+    getAll_migrateDistrictFromState_Options="//*[@contains(@id,'mat-option')]"
+    getAll_migratePincodeFromDistrict_Options="//*[@contains(@id,'mat-option')]"
+    click_migrateButton_Xpath="//button[@class='dp-primary-btn save-btn edit-gap ng-star-inserted' and contains(text(),'Yes,Migrate')]"
+    click_cancelMigrate_Xpath="//button[@class='dp-secondary-btn save-btn edit-gap' and @type='button' and contains(text(),'No,cancel')]"
+    click_closeMigrateWindow_Xpath="//*[@class='img-container']"
+    memberName=''
+    check_migrateMemberDetails_Xpath='//*[contains(text(),"Migrate - {}")]'.format(memberName)
+    check_migrateStateText_Xpath='//*[contains(text(),"Enter State*")]'
+    check_migrateDistrictText_Xpath='//*[contains(text(),"Enter district*"]'
+    check_migratePincodeText_Xpath='//*[contains(text(),"Enter pincode (Optional)"]'
+
+    enter_dataNotFoundComments_Xpath='//*[formcontrolname="comments"]'
+    check_dataNotFoundCommentsTitle_Xpath='//*[contains(text(),"Add Comments")]'
+    check_dataNotFooundCommentsHeading_Xpath='//*[contains(text(),"Comments *")]'
+    click_closeDataNotFoundWindow_Xpath="//*[@class='img-container']"
+    button_clickSubmitButton_Xpath='//button[@class="dp-primary-btn save-btn edit-gap" and contains(text(),"Submit")]'
+    get_errorMessageDataNotFound_Xpath="//*[contains(text(),'Last istravrity date of the datum must be before 2023 to mark it as untrackable')]"
+    get_errorMessageForInvalidComment_Xpath='//*[contains(text(),"Comments is invalid.")]'
+
+
     
-    
-
-
-
-
-
-
     def __init__(self,driver):
         self.driver=driver
 
