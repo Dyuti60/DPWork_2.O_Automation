@@ -289,7 +289,7 @@ class DpWorkUpdatePage:
                 for dict_key_text in element_dict.keys():
                     if dict_key_text == PhilMemberName.lower():
                         element_dict[dict_key_text].click()
-                        self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.popup_fcConfirm_Xpath))
+                        self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.popup_fcConfirmMapping_Xpath))
                         flag=True
                         break
                     else:

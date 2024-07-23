@@ -1,0 +1,9 @@
+Database table: wb_diksha_member : historical updated data is maintained
+Database Table: member_sug_name : on giving suggested names
+Database Table: fw_diksha_member : latest updated data is maintained
+Database Table: access_log
+Database Table: da_diksha_member_h
+Database Table: or_diksha_member
+
+
+record_status_catalog : to get information about all the record record_status_catalog

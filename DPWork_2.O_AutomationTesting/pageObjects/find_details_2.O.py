@@ -15,10 +15,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 class FindDetails:
+    click_DP2_O_FromNavigationPanel_Xpath='//span[@class="ml-12 sidebar-text" and contains(text(),"DP 2.0")]'
+    click_FindDetails_DP_2_O_FromNavigationPanel_Xpath='//span[@class="ml-12 sidebar-text" and contains(text(),"Find Details")]'
     check_FindDetailsPageTitle_Xpath='//span[@class="details-text" and contains(text(),"Find details")]'
     click_AssignedTabFromTopFindDetails_Xpath='//*[contains(@class,"dp-chip ng-star-inserted") and contains(text(),"Assigned List")]'
-    click_TransferRequestsFromTopFindDetails_Xpath='//*[@class="" and contains(text(),"Transfer Requests")]'
-    click_NotFoundListFromTopFindDetails_Xpath='//*[@class="" and contains(text(),"Not Found List")]'
+    click_TransferRequestsFromTopFindDetails_Xpath='//*[contains(@class,"dp-chip ng-star-inserted") and contains(text(),"Transfer Requests")]'
+    click_NotFoundListFromTopFindDetails_Xpath='//*[contains(@class,"dp-chip ng-star-inserted") and contains(text(),"Not Found List")]'
     click_stateFilterDropdown_ID="state"
     click_getAllStateOptions_Xpath='//*[contains(@id,"mat-option")]'
     click_stateFilterDropdown_ID="district"
@@ -42,8 +44,7 @@ class FindDetails:
     check_favouritesSuccessMessage_Xpath='//*[contains(text(),"{} has been successfully added to your Favourites.")]'.format(MemberName)
     getAll_Wishlist_Items='//span[@class="item-text"]'
     text_searchAWishlistByName_Xpath='//input[@class="dp-input-control wishlist-input ng-pristine ng-valid ng-touched" and contains(@placeholder,"Search for a wishlist by name")]'
-    check_MyWishlistText_Xpath='//span[@class="wishlist-text" and contains(text(),"My wishlists"))]'
-    button_closeWishlist_Xpath='//*[]'
+    check_MyWishlistText_Xpath='//span[@class="wishlist-text" and contains(text(),"My wishlists")]'
     button_createNewWishlist_Xpath='//*[@class="ms-1" and contains(text(),"Create new")]'
     MemberName=''
     check_AddToWishlistSuccessMessage_Xpath="//*[contains(text(),'Datum added to wishlist '{}' successfully!') and contains(text(),'Your can access all wish-lists from the ‘My wishlists’') ]".format(MemberName)

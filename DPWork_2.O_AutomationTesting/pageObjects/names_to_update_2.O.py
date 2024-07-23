@@ -15,6 +15,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 class NamesToUpdate:
+    click_DP2_O_FromNavigationPanel_Xpath='//span[@class="ml-12 sidebar-text" and contains(text(),"DP 2.0")]'
+    click_NamesToUpdate_DP_2_O_FromNavigationPanel_Xpath='//span[@class="ml-12 sidebar-text" and contains(text(),"Names To Update")]'
     check_NamesToUpdateModuleTitleText_Xpath='//*[contains(text(),"update-text")]'
     click_AllNamesTab_Xpath='//*[contains(@class,"dp-chip") and contains(text(),"All names")]'
     click_AssignedTab_Xpath='//*[contains(@class,"dp-chip") and contains(text(),"Assigned")]'
@@ -60,6 +62,7 @@ class NamesToUpdate:
 
     button_clickMasterSearchSearchButton_Xpath='//button[@class="dp-primary-btn search-btn ms-3" and contains(text(),"Search")]'
     button_clickMasterSearchClearButton_Xpath='//button[@class="dp-secondary-btn clear-btn" and @type="reset" and contains(text(),"Clear Entries")]'
+    button_closeMasterSearchWindow_Xpath='//*[@class="img-container"]'
     
     #Global Search
     text_enterSearchByNameStringGlobalSearch_Xpath='//input[@class="dp-input-control update-input mt-2 ng-pristine ng-valid ng-touched" and @placeholder="Search By Name"]'
@@ -121,13 +124,20 @@ class NamesToUpdate:
     select_getAllDistrictOptions_Xpath='//*[contains(@id,"mat-options")]'
     text_enterInitiationDateKeywordSearch_Xpath='//input[@formcontrolname="initiationDate"]'
 
+    fetchdata_getAllHeaderFields_Xpath='//th[contains(@class,"ng-star-inserted")]'
+    fetchdata_getAllColumnFieldValuesExceptSerialNumber_Xpath='//td[contains(@class,"ng-star-inserted")]//*[contains(@class,"cell-text")]'
+    fetchdata_getAllColumnFieldValuesOnlySerialNumber_Xpath='//td[contains(@class,"ng-star-inserted")]//*[contains(@class,"serial-no-text")]'
 
+    #Assign FW:
+    check_AssignFWTitleText_Xpath='//span[@class="fw-assign-text" and contains(text(),"Select a Field worker to assign")]'
+    check_AssignFWHeaderText_Xpath='//span[@class="fw-text" and contains(text(),"Field worker")]'
+    link_clickCancelButtonToCloseAssignFWWindow_Xpath='//span[@class="cancel-text text-center fw-assign-gap" and type="button" and contains(text(),"No, cancel")]'
+    button_clickAssignButton_Xpath='//button[@class="dp-primary-btn fw-assign-btn fw-assign-gap" and contains(text(),"Assign")]'
+    click_AssignFWDropdown_Xpath='//*[@class="mat-mdc-select-value ng-tns-c1771602899-58"]'
+    getAll_AssignFWOptionsFromDropdown_Xpath='//*[contains(@id="mat-option")]'
 
-
-
-
-    #Assign to FW Button
-
+    button_ClickDoneButtonOnSuccessfulAssignment_Xpath='//button[@class="save-button dp-primary-btn ng-star-inserted" and contains(text(),"Done")]'
+    button_closeAssignFWButton_Xpath='//*[@class="close-button"]'
 
 
     def __init__(self,driver):

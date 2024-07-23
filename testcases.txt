@@ -1,0 +1,123 @@
+Mail: state.bengal@gmail.com
+Password: Test @1234
+
+state admin: west bengal
+odisha cuttack: jk
+district admin: west bengal , kolkata
+field worker: west bengal, kolkata
+field worker: odisha, cuttack
+district admin: west bengal, bankura
+state admin: odisha
+district admin: ODISHA, cuttack
+
+
+Case 1: User Role updates a serial number with permanent address as Kolkata WB(Serial Number: Update Active 62767240)
+Result: User Role being a DA of Kolkata is able to review data- Approves
+
+Case 2: User Role updates a serial number with permanent address as Cuttack Odisha (Serial Number: Update Active 10000875 --> 000000003500 --> Bibek Acharjee)
+Result: User Role being a DA of Cuttack is able to review data- Rejects
+
+Merge FC
+Case 1: DA Approved Kolkata Permanent Address Serial Number (37002139) Merged with FC member (000000243700 - Birendranath Barman) 
+Expected Result: The fc to get merge into the serial number, to be approved by Kolkata DA 
+Actual Result: No data found, api gets  called on loading but with header as previously search serial number.
+Case 2: DA Approved Cuttak Permanent Address Serial Number (10019122) Merged with FC member (000000243700)
+Expected Result: The fc to get merge into the serial number, to be approved by Cuttack DA
+Actual Result: https://stage.dpworks.in/api/v1/members/merged-family-codes?uiState=ODISHA&uiDistrict=CUTTACK&pincode=&serialNumber=10000875&updatedByFW=&pageNo=1
+
+Add to DPNF:
+Case 1: Diksha, Present and Permanent Address set as Kolkata, West bengal
+        Test Data: Name- Dyuti Ben Chaubey PhilName: Anjana Pal FC:00183294200 
+        Success
+Case 2: Edit DPNF:
+        User role not able to edit present and permanent po
+
+
+Names To Update:
+1. Expand a record--> click search icon --> map serial number to the record
+Expected: Should map successfully
+Actual: For some record, serial number is getting mappeed for some its not.
+
+
+
+
+
+Bug: UI
+0. When a member logs in -->Names to Update--> https://stage.dpworks.in/api/v1/members/phil-data?uiState=ODISHA&pageNo=1&pageSize=4000&uiDistrict=CUTTACK&assigned=false 400 error
+1. on reviewing data --> Select a state error is coming as another api is getting called
+2. https://stage.dpworks.in/api/v1/members/updated?uiState=ODISHA&uiDistrict=CUTTACK&pincode=&serialNumber=62767240&updatedByFW=&pageNo=1
+  serial number is passed as paramtere (that too previously searched)
+  when searched in one state and again navigate to other state
+3. https://stage.dpworks.in/api/v1/reports/statuses
+4. https://stage.dpworks.in/api/v1/reviews-pending?uiState=ODISHA
+
+5. On clicking non initiated, other countrys pop surfaces (Live Prod)
+6. For the user role, in manage (Review Data) present address is coming as blank even though filled while updating (10000875)
+7. In Work history, threee da and member updates tabs are there, expected only onbe should be there
+8. https://stage.dpworks.in/api/v1/history/me?state=WEST%20BENGAL&pageNo=1&recordStatus=undefined
+record status is sent as undefined in work history pageNo
+9. District Review History: user should be asked to select state out of the permissions allowed (Wb and Odisha for the user role)
+10. Merge FC --> When clicked on Merge FC tab --> on the header passed previously search serial number of other state previously searched--> https://stage.dpworks.in/api/v1/members/merged-family-codes?uiState=&uiDistrict=&pincode=&serialNumber=10000875&updatedByFW=&pageNo=1
+11. Merge FC click --> Naviage till district --> on the header passed previously search serial number of other state previously searched-->https://stage.dpworks.in/api/v1/members/merged-family-codes?uiState=WEST%20BENGAL&uiDistrict=KOLKATA&pincode=&serialNumber=10000875&updatedByFW=&p
+12. In DPNF List, the user role should be able to select state from dropdown (Wb, Odisha) and districts to which user role is DA (Cuttack for odisha and Bankura and Kolkata for wb)
+    but only WB state and district Kolkata is visible
+13: Edit DPNF: User role not able to edit PO, need to add Pincode again to edit PO
+14: Edit DPNF: User role not able to edit Gender (to be corrected later)
+15: Edit DPNF: User role not able to edit Family Code Mapped (to be corrected later)
+16: Edit DPNF: Payload, Marital Status has not been sent
+17: DPNF: On selecting state and district from filter, no response found.
+18: DPNF: User on mapping Member with null, keeps on loading.
+19: Are You updated: Status not changing even though in update module and global search, status is getting updated
+20: Find Details: In Header of the API which gets called incorrect (Previously selected distrcit is being passed)
+https://stage.dpworks.in/api/v1/members/assign-data?pageNo=1&uiState=WEST%20BENGAL&uiDistrict=CUTTACK
+21: Print ANd Monitor: Added to wishlist, tick mark in the icon comes--> later its clickable but when went inside it is not known where the data has been Added
+22: Print and Monitor: Added to Favourites, loved will be filled, but at present it is not filled 
+23: User is not able to make Primary Email.
+Existing email : btusar18@gmail.com
+New Email: tusharkantibiswas55@gmail.com
+{
+    "error": true,
+    "message": "Primary Email is required. Please enter a valid Primary Email"
+}
+primaryEmail
+: 
+"undefined"
+
+Status Code:
+400 Bad Request
+24: Find Details (Dipen Pal assigned to Kolkata by state.bengal@gmail.com) --> Transferred by column should be assigned by and value should be state.bengal@gmail.com
+25: Defaulter List: User when selects state and then district, the list is not filtered as per selection. Also the user has a JK access role for Cuttack District of odisha, on selecting that district and state, the required changes in the page should appear
+
+
+Bug: Backend
+1. Brtataddeep: 
+   when a member code is in dpnf and then other field worker is updating it record status is set to 11 and dpw_last_updated_at and dpw_last_updated_by is not getting set0
+2. Review Pending count for Odisha and Cuttack is same (10088)
+3. Names To Update:
+When Error Thrown: 000003664113
+curl "https://stage.dpworks.in/api/v1/phil-op/phil-not-updated/000003664113" ^
+  -X "PATCH" ^
+  -H "Accept: application/json, text/plain, */*" ^
+  -H "Accept-Language: en-US,en;q=0.9,en-IN;q=0.8" ^
+  -H "Connection: keep-alive" ^
+  -H "Content-Type: application/json" ^
+  -H "Origin: http://65.2.189.74" ^
+  -H "Referer: http://65.2.189.74/" ^
+  -H "Sec-Fetch-Dest: empty" ^
+  -H "Sec-Fetch-Mode: cors" ^
+  -H "Sec-Fetch-Site: cross-site" ^
+  -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0" ^
+  -H ^"sec-ch-ua: ^\^"Not/A)Brand^\^";v=^\^"8^\^", ^\^"Chromium^\^";v=^\^"126^\^", ^\^"Microsoft Edge^\^";v=^\^"126^\^"^" ^
+  -H "sec-ch-ua-mobile: ?0" ^
+  -H ^"sec-ch-ua-platform: ^\^"Windows^\^"^" ^
+  -H "x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbF9pZCI6InN0YXRlLmJlbmdhbEBnbWFpbC5jb20iLCJpZCI6MjUsInN0YXRlX2NvZGUiOiJ3YiIsImZpcnN0X25hbWUiOiJXZXN0IiwibGFzdF9uYW1lIjoiQmVuZ2FsIiwicm9sZV9uYW1lIjoiU1RBVEUgQURNSU4iLCJwZXJtaXNzaW9ucyI6IltcImNhbl9tZXJnZV9mY1wiLFwiY2FuX21hcmtfZW50aXR5XCIsXCJjYW5fc2VlX3BoaWxfZGF0YVwiXSIsInBpbmNvZGUiOiI3MDAwMjAiLCJkaXN0cmljdF9uYW1lIjoiS09MS0FUQSIsInN0YXRlX25hbWUiOiJXRVNUIEJFTkdBTCIsInZlcmlmaWVkIjoxLCJmYW1pbHlDb2RlIjoiMDAxODc2NDA3MDAwIiwicmVmcmVzaEtleSI6eyJ0eXBlIjoiQnVmZmVyIiwiZGF0YSI6WzE0MCwxMywyMjcsMTM0LDE2NiwxODQsMjA0LDE5MiwxNTEsNTQsNDYsNjUsMTg2LDE0NywxOTMsMTQ1XX0sImlhdCI6MTcyMTU4NzM2NiwiZXhwIjoxNzIxNTk0NTY2fQ.fA0dUQ-Vgu7S0F5WxT1wlXyBTZEguysbYdpYTOcu2fc" ^
+  --data-raw ^"^{^\^"dpwMemKey^\^":^\^"47857862^\^"^}^"
+
+  4. The user role is not able to assign a fw in names to update, the user role state.bengal@gmail.com is not coming in dropdown
+  5. Datum Reset, Datum needs to be removed from dpnf
+  6. If any memkey against a phil member code is found by dpnf, and rejected by the submitter, prevent it from getting fw updated with the same criteria.
+
+10. refersh token permissioin related fix
+11. when a data is reset remove from phil table and also from dpnf submitted datum
+12. if a data is in dpnf rejected status and the dautum updated serial no. matches the dpnf serial no. then don't allow to mark it as fw completed in dpnf
+15. names to update does not show in the list of field workers the state admin account
