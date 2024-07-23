@@ -47,12 +47,36 @@ class ReviewData:
     button_clickCrossToCloseMergeFCManageWindow_Xpath='//*[@class="close-button" and @type="button"]'
 
     #Manage in Update:
-    #fetch_getAllUpdateField
+    serialNumberUpdated=''
+    check_updateDetailsInManageSextionReviewDataTitleText_Xpath='//*[@class="topHead d-flex justify-content-between"]//*[contains(text(),"Review updated data ({})")]'.format(str(serialNumberUpdated))
+    fetch_getAllUpdateHeaderFieldsInReviewDataManageSection='//*[@class="inpLabel"]'
+    fetch_getAllUpdateFieldValuesInReviewDataManageSection=''
+    button_clicktoCloseManageUpdateInReviewDataWindow_Xpath='//button[@class="close-button" and @type="button"]'
 
+    #Update History in Review Data:
+    serialNumberUpdated=''
+    check_updateHistoryTitleText_Xpath='//*[@class="topHead d-flex justify-content-between"]//*[contains(text(),"Update History- {}")]'.format(str(serialNumberUpdated))
+    fetch_getAllUpdateHistoryElements_Xpath='//*[@class="d-flex justify-content-between"]'
+
+    fetch_getAllUpdateHistoryHeaderFields_Xpath='//span[@class="details-head"]'
+    fetch_getAllUpdateHistoryFieldValues_Xpath='//span[@class="details-data"]'
+
+    button_clicktoCloseUpdateHistoryWindow_Xpath='//button[@class="close-button" and @type="button"]'
+    
     #Filter
+    button_clickSearchFilterButtonInUpdatedReviewDataPage_Xpath='//button[@class="dp-secondary-btn btn-div d-flex ng-star-inserted"]'
+    check_SearchFilterWindowTitleText_Xpath='//span[contains(text(),"Search Data")]'
+    check_SearchFilterWindowSerialNumberHeaderText_Xpath='span[@class="input-text" and contains(text(),"Serial Number")]'
+    check_SearchFilterWindowPincodeHeaderText_Xpath='span[@class="input-text" and contains(text(),"Pincode")]'
+    check_SearchFilterWindowSerialNumberHeaderText_Xpath='span[@class="input-text" and contains(text(),"Field Worker")]'
+    button_clickSearchFilterWindowCrossButton_Xpath='//*[@class="close-button"]'
+    button_clickClearAllButton_Xpath='//button[@class="dp-secondary-btn btn-div" and contains(text(),"clear All")]'
+    button_clickSearchButton_Xpath='//button[@class="dp-primary-btn btn-div" and contains(text(),"Search")]'
 
-
-
+    text_enterSerialNumberInSearchFilterWindow_Xpath='//input[@class="search-input dp-input-control ng-pristine ng-valid ng-touched" and @type="tel" and @placeholder="Enter Sl. No"]'
+    text_enterPincodeInSearchFilterWindow_Xpath='//input[@class="mat-mdc-autocomplete-trigger search-input dp-input-control ng-untouched ng-valid ng-dirty" and @type="tel" and @placeholder="Enter Pincode"]'
+    text_selectPincodeAfterEnteringPincode_Xpath='//*[contains(@id,"mat-option")]'
+    text_enterFieldWorkerInSearchFilterWindow_Xpath='//input[@class="mat-mdc-autocomplete-trigger search-input dp-input-control ng-untouched ng-pristine ng-valid" and @type="text" and @placeholder="Enter FW Name"]'
 
     def __init__(self,driver):
         self.driver=driver
