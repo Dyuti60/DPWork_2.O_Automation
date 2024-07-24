@@ -36,16 +36,18 @@ class SignupPage:
     text_getPasswordErrorMessage='//*[contains(text(),"Password complexity is not matching")]'
     text_getAddressErrorMessage='//*[contains(text(),"Enter address")]'
     text_getPincodeErrorMessage='//*[contains(text(),"Enter pincode")]'
-    click_RegisterButton_Xpath='//button[@class="signIn-button dp-primary-btn" and @type="submit" and contains(text(),"Sign up")]'
+    click_RegisterButton_Xpath='//button[@class="signIn-button dp-primary-btn" and @type="submit"]'
 
 
     text_phoneOTP_Xpath='//input[@formcontrolname="phoneOtp"]'
     text_emailOTP_Xpath='//input[@formcontrolname="emailOtp"]'
     text_resendTimer_Xpath='//*[contains(text(),"Resend in")]'
-    text_resend_Xpath='//span[text()="Resend")]'
-    click_verfiyCodesButton_Xpath='//*[@type="submit" and contains(text(),"Verify codes"]'
+    text_resend_Xpath='//*[@class="resend-text"]'
+    click_resendLink_Xpath='//*[contains(@class,"resend-text")]'
+    wait_AsCodeAlreadySentText_Xpath='//*[contains(text(),"A verification code has been sent already.")]'
+    click_verfiyCodesButton_Xpath='//*[@type="submit" and @class="signIn-button dp-primary-btn"]'
 
-    click_loginButton_Xpath='//*[@class="registration-now-text" and contains(text(),"Login now")]'
+    click_loginButtonSuccess_Xpath='//button[@class="save-button dp-primary-btn"]'
 
     text_messageOnSuccessRegsitration='//*[contains(text(),"Your account was created successfully!") and contains(text(),"You can login to DP using the new credentitals")]'
 
@@ -53,17 +55,19 @@ class SignupPage:
     click_closeSuccessSignUpWindow_Xpath='//*[@role="img" and contains(text(),"close")]'
 
     text_enterFamilyCode_Xpath='//input[@formcontrolname="fc"]'
-    click_loginAfterEnteringFamilyCode_Xpath='//*[@class="login-button dp-primary-btn ng-star-inserted"]'
-    click_loginAfterEnteringFamilyCode_Xpath='//*[@class="ng-star-inserted" and contains(text(),"Login")]'
+    click_loginAfterEnteringFamilyCode_Xpath='//*[@class="login-button dp-primary-btn"]'
+    #click_loginAfterEnteringFamilyCode_Xpath='//*[@class="ng-star-inserted" and contains(text(),"Login")]'
     text_getIncorrectErrorMessageForFamilyCodeField_Xpath='//*[contains(text(),"Could not find Family Code details. Please check the code again.")]'
-    click_getAllFamilyMemberName_Xpath='//*[@role="option" and contain(@id,"mat-option")]'
+    click_getAllFamilyMemberName_Xpath='//*[@role="option" and contains(@id,"mat-option")]'
 
     text_enterAuthenticatedCodeForFamilyCodePhilMemberMobileNumber_Xpath='//*[@formcontrolname="authenticationCode"]'
     click_loginButtonAfterFamilyCodeAuthentication_Xpath='//*[@class="login-button dp-primary-btn" and contains(text(),"login")]'
-    check_resendTimerAfterFamilyCodeAuthentication_Xpath='//*[@class="resend-countdown ng-star-inserted" and contains(text(Resend in),"")]'
+    check_resendTimerAfterFamilyCodeAuthentication_Xpath='//*[contains(text(),"Resend in")]'
     check_resendTextAfterFamilyCodeAuthentication_Xpath='//*[@class="resend ng-star-inserted" and contains(text(),"Resend")]'
+    click_resendLinkAfterFamilyCode_Xpath='//*[@class="resend ng-star-inserted"]'
     check_authenticationCodeSendMessageAfterFamilyCodeAuthentication_Xpath='//*[@class="login-content-text" and contains(text(),"We’ve sent an authentication code to your phone ending with")]'
 
+    waitForDAApprovalText_Xpath='//*[contains(text(),"You are not allowed")]'
     #Name0, Status1, AccounSettings2, Logout3
     fetch_getTextUserDetails_Xpath='//span[@class="sidebar-text ml-12"]'
 
@@ -88,8 +92,8 @@ class SignupPage:
     def clickRegisterNowButton(self):
         try:
             time.sleep(0.5)
-            if len(self.driver.find_elements(By.XPATH,self.check_registerNowText_Xpath))>0 and len(self.driver.find_elements(By.XPATH,self.check_beforePolicyText_Xpath))>0 and len(self.driver.find_elements(By.XPATH,self.link_policy_partialLinkText))>0 and len(self.driver.find_elements(By.XPATH,self.link_termsAndCondition_partialLinkText))>0:
-                self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.link_registerNow_PartiallinkText))
+            if len(self.driver.find_elements(By.XPATH,self.check_registerNowText_Xpath))>0 and len(self.driver.find_elements(By.XPATH,self.check_beforePolicyText_Xpath))>0 and len(self.driver.find_elements(By.PARTIAL_LINK_TEXT,self.link_policy_partialLinkText))>0 and len(self.driver.find_elements(By.PARTIAL_LINK_TEXT,self.link_termsAndCondition_partialLinkText))>0:
+                self.click_unitil_interactable(self.driver.find_element(By.PARTIAL_LINK_TEXT,self.link_registerNow_PartiallinkText))
                 return True
             else:
                 return False
@@ -104,7 +108,7 @@ class SignupPage:
             self.driver.find_element(By.XPATH,self.text_FirstName_Xpath).clear()
             if len(memberFirstName)==0:
                 memberFirstName=''
-            self.driver.find_element(By.XPATH,self.text_firstname_Xpath).send_keys(memberFirstName)
+            self.driver.find_element(By.XPATH,self.text_FirstName_Xpath).send_keys(memberFirstName)
         except Exception as e:
             raise CustomException(e,sys)
     
@@ -159,7 +163,7 @@ class SignupPage:
             self.driver.find_element(By.XPATH,self.text_confirmPassword_Xpath).clear()
             if len(confirmPassword)==0:
                 confirmPassword=''
-            self.driver.find_element(By.XPATH,self.text_password_Xpath).send_keys(confirmPassword)
+            self.driver.find_element(By.XPATH,self.text_confirmPassword_Xpath).send_keys(confirmPassword)
         except Exception as e:
             raise CustomException(e,sys)
         
@@ -181,7 +185,7 @@ class SignupPage:
             self.driver.find_element(By.XPATH,self.text_pinCode_Xpath).clear()
             if len(pincode)==0:
                 pincode=''
-            self.driver.find_element(By.XPATH,self.text_address_Xpath).send_keys(pincode)
+            self.driver.find_element(By.XPATH,self.text_pinCode_Xpath).send_keys(pincode)
         except Exception as e:
             raise CustomException(e,sys)
 
@@ -242,7 +246,7 @@ class SignupPage:
                 su.append("ErrorHandled")
             else:
                 su.append("ErrorNotHandled")
-        if "ErrorHandled" not in su:
+        if "ErrorNotHandled" in su:
             return False
         else:
             return True
@@ -251,6 +255,16 @@ class SignupPage:
         try:
             time.sleep(0.5)
             self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_RegisterButton_Xpath))
+        except Exception as e:
+            raise CustomException(e,sys)
+        
+    def waitFor3MinutesAsOtpAlreadySent(self):
+        try:
+            if len(self.driver.find_elements(By.XPATH,self.wait_AsCodeAlreadySentText_Xpath))>0:
+                time.sleep(181)
+                self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_RegisterButton_Xpath))
+            else:
+                pass
         except Exception as e:
             raise CustomException(e,sys)
     
@@ -265,20 +279,20 @@ class SignupPage:
         except Exception as e:
             raise CustomException(e,sys)
         
-    def enterPhoneOTP(self,emailOTP):
+    def enterEmailOTP(self,emailOTP):
         try:
             time.sleep(0.5)
             WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_emailOTP_Xpath)))
             self.driver.find_element(By.XPATH,self.text_emailOTP_Xpath).clear()
             if len(emailOTP)==0:
                 emailOTP=''
-            self.driver.find_element(By.XPATH,self.text_phoneOTP_Xpath).send_keys(emailOTP)
+            self.driver.find_element(By.XPATH,self.text_emailOTP_Xpath).send_keys(emailOTP)
         except Exception as e:
             raise CustomException(e,sys)
         
     def checkPresenceofResetTimer(self):
         try:
-            if(len(self.driver.find_element(By.XPATH,self.text_resendTimer_Xpath))):
+            if(len(self.driver.find_elements(By.XPATH,self.text_resendTimer_Xpath))>0):
                return True
             else:
                 return False
@@ -287,10 +301,19 @@ class SignupPage:
         
     def checkPresenceOfResendButton(self):
         try:
-            if(len(self.driver.find_element(By.XPATH,self.text_resend_Xpath))):
+            if(len(self.driver.find_elements(By.XPATH,self.click_resendLink_Xpath))>1):
                return True
             else:
                 return False
+        except Exception as e:
+            raise CustomException(e,sys)
+        
+    def clickResenButtonToVerifyEmailPhone(self):
+        try:
+            time.sleep(3)
+            elements=self.driver.find_elements(By.XPATH,self.click_resendLink_Xpath)
+            self.click_unitil_interactable(elements[0])
+            self.click_unitil_interactable(elements[1])
         except Exception as e:
             raise CustomException(e,sys)
 
@@ -304,8 +327,8 @@ class SignupPage:
 
     def clickLoginNowButtonOnGettingSignUpSuccessMessage(self):
         try:
-            time.sleep(0.5)
-            self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_loginButton_Xpath))
+            time.sleep(2)
+            self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_loginNowButtonAtBottom_Xpath))
         except Exception as e:
             raise CustomException(e,sys)
         
@@ -329,7 +352,8 @@ class SignupPage:
     def clickLoginNowOnEnteringPasswordAndUsername(self):
         try:
             time.sleep(0.5)
-            self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_loginButton_Xpath))
+            button_loginbutton_xpath='//*[@class="login-button dp-primary-btn"]'
+            self.click_unitil_interactable(self.driver.find_element(By.XPATH,button_loginbutton_xpath))
         except Exception as e:
             raise CustomException(e,sys)
         
@@ -337,6 +361,13 @@ class SignupPage:
         try:
             time.sleep(0.5)
             self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_loginNowButtonAtBottom_Xpath))
+        except Exception as e:
+            raise CustomException(e,sys)
+        
+    def waitForApprovalFromDA(self):
+        try:
+            input("Write 'Yes' and press enter to confirm that DA has approved the user role: ")
+            self.clickLoginNowOnEnteringPasswordAndUsername()
         except Exception as e:
             raise CustomException(e,sys)
         
@@ -376,7 +407,7 @@ class SignupPage:
 
                 element_dict=dict(zip(elements_text_value,PhilMemberName_locators))
                 for dict_key_text in element_dict.keys():
-                    if dict_key_text == PhilMemberName.lower():
+                    if str(dict_key_text).lower() == str(PhilMemberName).lower():
                         element_dict[dict_key_text].click()
                         flag=True
                         break
@@ -416,7 +447,13 @@ class SignupPage:
                 return False
         except Exception as e:
             raise CustomException(e,sys)
-        
+
+    def clickResendLinkToVerifyFC(self):
+        try:
+            time.sleep(0.5)
+            self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_resendLinkAfterFamilyCode_Xpath))
+        except Exception as e:
+            raise CustomException(e,sys)
     def clickLoginButtonOnEnteringFC(self):
         try:
             time.sleep(0.5)
@@ -431,7 +468,7 @@ class SignupPage:
         Status=elements[1]
         AccounSettings=elements[2]
         LogOut=elements[3]
-        return str(Name).text.strip.lower(), str(Status).text.strip.lower(), AccounSettings.text.strip.lower(), LogOut.text.strip.lower()
+        return str(Name.text).lower().strip(), str(Status.text).lower().strip()
     
     #familyCodePhilNameVerification_MobileNumberOTPAuthentication
     #IsPrimaryAccountSetVerifictaion_EmailOTPAuthentication

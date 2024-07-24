@@ -133,6 +133,7 @@ screenshots/
 logs/
 reports/
 documentation/
+allure_reports/
 
 # Spyder project settings
 .spyderproject
