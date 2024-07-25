@@ -19,3 +19,6 @@
         - pytest -v --html=./reports/DPWorkLoginPageTestReport.html DPWork_2.O_AutomationTesting/testcases/test_dpwork_login_functionality.py
         - Where DPWorkLoginPageTestReport.html is the report to be generated for the test case run and
         test_dpwork_login_functionality.py is the test case file
+
+Example:
+pytest -v -s DPWork_2.O_AutomationTesting/testcases/test_updateSerialNumber_functionality_2_O.py --html=updateSerialNumber.html --alluredir=allure_reports 
