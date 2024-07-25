@@ -14,7 +14,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-class forgotPassword:
+class ForgotPassword:
 
     link_forgotPassword_Xpath='//*[@class="forgot-password-text" and contains(text(),"Forgot password?")]'
     button_loginNow_Xpath='//*[@class="login-now-text" and contains(text(),"Back to Login")]'
@@ -22,36 +22,37 @@ class forgotPassword:
     enter_email_Xpath='//input[@formcontrolname="email"]'
     button_resetPassword_Xpath='//*[@class="reset-password-button dp-primary-btn" and contains(text(),"Reset password")]'
     #check
-    check_resetPasswordText_Xpath='//*[@class="reset-password-title-text ng-star-inserted" and contains(text(),"Reset Password")]'
+    check_resetPasswordText_Xpath='//span[@class="reset-password-title-text" and contains(text(),"Reset Password")]'
     check_registeredEmailAddressText_Xpath='//span[@class="input-level-text" and contains(text(),"Registered email address*")]'
 
-    enter_emailOTP_Xpath='//input[@formcontrolname="emailOTP"]'
+    enter_emailOTP_Xpath='//input[@formcontrolname="emailOtp"]'
     button_verifyIdentity_Xpath='//*[@class="verify-button dp-primary-btn" and contains(text(),"Verify identity")]'
     #check
-    check_emailOTPText_Xpath='//*[@class="input-level-text" and contains(text(),"Email OTP *"]'
-    check_resendTimerText_Xpath='//*[@class="resend-countdown-text ng-star-inserted" and contains(text(),"Resend in")]'
+    check_emailOTPText_Xpath='//*[@class="input-level-text" and contains(text(),"Email OTP *")]'
+    check_resendTimerText_Xpath='//*[contains(@class,"resend-countdown-text") and contains(text(),"Resend in")]'
 
     enter_newPassword_Xpath='//input[@formcontrolname="password"]'
     enter_confirmPassword_Xpath='//input[@formcontrolname="reEnterPassword"]'
     button_clickActivateAccount_Xpath='//*[@class="verify-button dp-primary-btn" and contains(text(),"Activate account")]'
     #check
-    check_createPasswordText_Xpath='//*[@class="reset-password-title-text ng-star-inserted" and contains(text(),"Create password")]'
-    check_createPasswordTitleText_Xpath='//*[@class="input-level-text" and contains(text(),"Create password*"]'
-    check_reEnterPasswordTitleText_Xpath='//*[@class="input-level-text" and contains(text(),"Re-enter password*"]'
-    check_errorMessageForPasswordComplexityMismatch_Xpath='//*[@class="error-message ng-star-inserted" and "Password complexity not matching"]'
+    check_createPasswordText_Xpath='//*[contains(@class,"reset-password-title-text") and contains(text(),"Create password")]'
+    check_createPasswordTitleText_Xpath='//*[@class="input-level-text" and contains(text(),"Create password*")]'
+    check_reEnterPasswordTitleText_Xpath='//*[@class="input-level-text" and contains(text(),"Re-enter password*")]'
+    check_errorMessageForPasswordComplexityMismatch_Xpath='//*[contains(@class,"error-message") and contains(text(),"Password complexity not matching")]'
+    check_errorMessageForPasswordMismatch_Xpath='//*[contains(text(),"not matching")]'
 
     #check
     check_titleTextOnSuccessPasswordChange_Xpath='//*[@class="title" and contains(text(),"Your password has been successfully reset!")]'
     check_subtitleTextOnSuccessPasswordChange_Xpath='//*[@class="subtitle" and contains(text(),"You can login to DP using the new credentitals")]'
 
-    button_clickLoginNow_Xpath='//*[@class="save-button dp-primary-btn ng-star-inserted" and contains(text(),"Login now")]'
+    button_clickLoginNow_Xpath='//*[contains(@class,"save-button dp-primary-btn") and contains(text(),"Login now")]'
     click_crossButton_Xpath='//*[@class="cross-icon-container"]'
     check_errorOTPResendMessage_Xpath='//*[@class="A verification code has been sent already. Please check your email or mobile and try again after 3 minutes"]'
     checkurl='http://65.2.189.74/login'
 
-    check_emailBlankInlineErrorMessage_Xpath='//span[@class="validation-message ng-star-inserted" and contains(text(),"Email is required")]'
-    check_emailOTPBlankInlineErrorMessage_Xpath='//span[@class="validation-message ng-star-inserted" and contains(text(),"OTP is required")]'
-    click_resendButton_Xpath='//*[@class="resend-text ng-star-inserted" and contains(text(),"Resend")]'
+    check_emailBlankInlineErrorMessage_Xpath='//span[contains(@class,"validation-message") and contains(text(),"Email is required")]'
+    check_emailOTPBlankInlineErrorMessage_Xpath='//span[contains(@class,"validation-message") and contains(text(),"OTP is required")]'
+    click_resendButton_Xpath='//*[contains(@class,"resend-text") and contains(text(),"Resend")]'
 
     def __init__(self,driver):
         self.driver=driver
@@ -158,7 +159,7 @@ class forgotPassword:
                 self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_clickActivateAccount_Xpath))
                 return "ActivateButtonTrue"
             elif newPassword !=confirmPassword:
-                if len(self.driver.find_elements(By.XPATH,self.check_errorMessageForPasswordComplexityMismatch_Xpath))>0:
+                if len(self.driver.find_elements(By.XPATH,self.check_errorMessageForPasswordMismatch_Xpath))>0:
                     return "ActivateButtonFalse"
             else:
                 return "False"

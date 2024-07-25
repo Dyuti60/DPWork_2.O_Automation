@@ -121,3 +121,4 @@ curl "https://stage.dpworks.in/api/v1/phil-op/phil-not-updated/000003664113" ^
 11. when a data is reset remove from phil table and also from dpnf submitted datum
 12. if a data is in dpnf rejected status and the dautum updated serial no. matches the dpnf serial no. then don't allow to mark it as fw completed in dpnf
 15. names to update does not show in the list of field workers the state admin account
+16: test_user7@test.com not able to reset password, where is_primary_account =0 and account_merged_with is NULL 

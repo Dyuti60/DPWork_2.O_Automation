@@ -67,7 +67,8 @@ class SignupPage:
     click_resendLinkAfterFamilyCode_Xpath='//*[@class="resend ng-star-inserted"]'
     check_authenticationCodeSendMessageAfterFamilyCodeAuthentication_Xpath='//*[@class="login-content-text" and contains(text(),"We’ve sent an authentication code to your phone ending with")]'
 
-    waitForDAApprovalText_Xpath='//*[contains(text(),"You are not allowed")]'
+    waitForDAApprovalText_Xpath='//*[contains(text(),"You are not allowed to access.")]'
+    accountAlreadyMergedText_Xpath='//*[contains(text(),"This account is already merged with")]'
     #Name0, Status1, AccounSettings2, Logout3
     fetch_getTextUserDetails_Xpath='//span[@class="sidebar-text ml-12"]'
 
@@ -371,6 +372,15 @@ class SignupPage:
         except Exception as e:
             raise CustomException(e,sys)
         
+
+    def checkAccounIsAlreadyMerged(self):
+        try:
+            if len(self.driver.find_elements(By.XPATH,self.accountAlreadyMergedText_Xpath))>0:
+                return False
+            else:
+                return True
+        except Exception as e:
+            raise CustomException(e,sys)
     def enterFamilycodeOneByOne(self,Familycode):
         for elementIndex in range(len(Familycode)):
             self.driver.find_element(By.XPATH,self.text_enterFamilyCode_Xpath).send_keys(Familycode[elementIndex])

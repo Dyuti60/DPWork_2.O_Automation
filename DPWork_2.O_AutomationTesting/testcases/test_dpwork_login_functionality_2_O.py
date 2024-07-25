@@ -14,7 +14,7 @@ from configurations.constants import projectName,dot_env_file
 from configurations.constants import dpwork_loginpage_Screenshot_folder,dpwork_loginpage_documentation_filename
 import time
 import os
-from configurations.constants import login_page_evidence_attachment,login_page_report_attachment
+from configurations.constants import *
 
 #hi=priyam.baidya.rs@gmail.com
 #nvpzchqmzngpcxpc
@@ -46,9 +46,10 @@ class Test_001_Login:
     receiversCC=readConfig.getEmailCCReceivers()
     login_page_evidence_attachment_filepath=os.getcwd()+"\\documentation\\"+login_page_evidence_attachment
     login_page_logs_attachment_filepath=os.getcwd()+"\\logs\\"+log_file+"\\"+log_file
+    Login_testData_FilePath=os.getcwd()+"\\DPWork_2.O_AutomationTesting\\testdata\\"+Login_testData_File
 
 
-    def test_DpWorkLoginPageValidFieldWorker(self, setup):
+    def test_DpWorkLoginPageExistingUserMemCodeVerifiedAndPrimaryAccountNotSet(self, setup):
         try:
             self.logging.info("Test Begins")
             self.driver=setup
@@ -60,20 +61,54 @@ class Test_001_Login:
             time.sleep(2)
             self.dplp=DpWorkLoginPage(self.driver)
             self.dplp.waitForLoginPage()
+            index=0
+            dataframe=XLUtils.convert_excelSheetIntoDataFrame(excelFilePath=self.Login_testData_FilePath,sheetName=LoginExistingUserPANSEmailNV_SheetName)
+            LoginPANotSetEmailNotVerifiedTestDataDict,newUserSignUpLoginfieldValues_length=XLUtils.ReturnDictionaryforselectedColumnsInDataframe(dataframe, ParameterField=parametersFields,FieldValues=fieldValues)
+
+            self.dplp.setDpWorkUserName(list(LoginPANotSetEmailNotVerifiedTestDataDict[simpleLogin_user_emailAddress])[index])
+            self.dplp.setDpWorkPassword(list(LoginPANotSetEmailNotVerifiedTestDataDict[simpleLogin_user_password])[index])
+            self.dplp.clickLoginButton()
+            
+
+        
+        except Exception as e:
+            docsutil.appendContentWithFailColor(self.document,"Test Case - 001 - Test DpWork Login Page for A Valid FieldWorker")
+            raise CustomException(e,sys)
+
+
+
+    def test_DpWorkLoginPageValidFieldWorkerJustRegisteredSimpleLogIn(self, setup):
+        try:
+            self.logging.info("Test Begins")
+            self.driver=setup
+            self.logging.info("Driver Initiated")
+            self.driver.implicitly_wait(4)
+            self.driver.maximize_window()
+            self.driver.get(self.dpwork_url)
+            self.logging.info("Surfing to DpWork login page")
+            time.sleep(2)
+            self.logging.info("Data will be taken from Test Data file")
+
+            index=0
+            dataframe=XLUtils.convert_excelSheetIntoDataFrame(excelFilePath=self.Login_testData_FilePath,sheetName=SimpleLoginNewUserOrAllVerified_SheetName)
+            LoginTestDataDict,newUserSignUpLoginfieldValues_length=XLUtils.ReturnDictionaryforselectedColumnsInDataframe(dataframe, ParameterField=parametersFields,FieldValues=fieldValues)
+
+            self.dplp=DpWorkLoginPage(self.driver)
+            self.dplp.waitForLoginPage()
 
             ss00_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Login Page','00',self.driver)
             docsutil.addMediumHeading(self.document,"Test Case - 001 - Test DpWork Login Page for A Valid FieldWorker")
             docsutil.appendContentWithBlueColor(self.document,"DP Work Login Page: Test Case - 001 - Begins:")
             docsutil.insertImageInDocx(self.document,ss00_location)
 
-            self.dplp.setDpWorkUserName(self.field_worker_username)
-            self.logging.info("Username Entered- {}".format(self.field_worker_username))
-            self.dplp.setDpWorkPassword(self.field_worker_password)
+            self.dplp.setDpWorkUserName(list(LoginTestDataDict[simpleLogin_user_emailAddress])[index])
+            self.logging.info("Username Entered- {}".format(list(LoginTestDataDict[simpleLogin_user_emailAddress])[index]))
+            self.dplp.setDpWorkPassword(list(LoginTestDataDict[simpleLogin_user_password])[index])
             self.logging.info("Corresponding Password Entered")
 
             ss01_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Login Page','01',self.driver)
             docsutil.addSmallHeading(self.document,"Field Worker Enters User Name and Password")
-            docsutil.appendContent(self.document,"DP worker valid username - {}".format(self.field_worker_username))
+            docsutil.appendContent(self.document,"DP worker valid username - {}".format(list(LoginTestDataDict[simpleLogin_user_emailAddress])[index]))
             docsutil.appendContent(self.document,"DP worker valid password - **************")
             docsutil.insertImageInDocx(self.document,ss01_location)
 
