@@ -66,7 +66,7 @@ class Test_002_MasterSearch:
     testDataAreYouUpdatedSheet=masterSearchAreYouUpdatedSheetName
     AreYouUpdatedDataExtractFilePath=masterSearch_page_areYouUpdatedSearch_extract_filepath
 
-
+    @pytest.mark.test_phase1
     def test_DpWorkMasterSearchGlobalSearch(self, setup):
         try:
             self.logging.info("Test Begins")
@@ -168,7 +168,7 @@ class Test_002_MasterSearch:
         except Exception as e:
             docsutil.appendContentWithFailColor(self.document,"Test Case - 001 - Test DpWork Master Search Page - Global Search Page")
             raise CustomException(e,sys)
-
+    @pytest.mark.test_phase1     
     def test_DpWorkMasterSearchKeywordSearch(self, setup):
         try:
             self.logging.info("Test Begins")
@@ -257,19 +257,25 @@ class Test_002_MasterSearch:
                 docsutil.insertImageInDocx(self.document,ss10_location)
 
                 self.dpms.enterRitwikFirstName(ritwikFirstName=list(masterSearchTestDataDict[RitwikFirstName])[index])
-                ss11_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','11',self.driver)
-                docsutil.addSmallHeading(self.document,"Field Worker enters ritwik first name for keyword search")
-                docsutil.insertImageInDocx(self.document,ss11_location)
+                ss13_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','11',self.driver)
+                docsutil.addSmallHeading(self.document,"Field Worker enters Ritwik First Name for keyword search")
+                docsutil.insertImageInDocx(self.document,ss13_location)
 
                 self.dpms.enterRitwikMiddleName(ritwikMiddleName=list(masterSearchTestDataDict[RitwikMiddleName])[index])
-                ss12_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','12',self.driver)
-                docsutil.addSmallHeading(self.document,"Field Worker enters ritwik middle name for keyword search")
-                docsutil.insertImageInDocx(self.document,ss12_location)
+                ss13_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','12',self.driver)
+                docsutil.addSmallHeading(self.document,"Field Worker enters Ritwik Middle Name for keyword search")
+                docsutil.insertImageInDocx(self.document,ss13_location)
 
                 self.dpms.enterRitwikLastName(ritwikLastName=list(masterSearchTestDataDict[RitwikLastName])[index])
                 ss13_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','13',self.driver)
-                docsutil.addSmallHeading(self.document,"Field Worker enters ritwik last name for keyword search")
+                docsutil.addSmallHeading(self.document,"Field Worker enters Ritwik Last Name for keyword search")
                 docsutil.insertImageInDocx(self.document,ss13_location)
+
+
+                #self.dpms.enterRitwikName(ritwikFirstName=list(masterSearchTestDataDict[RitwikFirstName])[index],ritwikMiddleName=list(masterSearchTestDataDict[RitwikMiddleName])[index],ritwikLastName=list(masterSearchTestDataDict[RitwikLastName])[index])
+                #ss13_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','13',self.driver)
+                #docsutil.addSmallHeading(self.document,"Field Worker enters Ritwik Name for keyword search")
+                #docsutil.insertImageInDocx(self.document,ss13_location)
 
                 self.dpms.enterInitiationDate(initiationDate=list(masterSearchTestDataDict[InitiationDate])[index])
                 ss14_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','14',self.driver)
@@ -286,21 +292,21 @@ class Test_002_MasterSearch:
                 docsutil.addSmallHeading(self.document,"Field Worker enters pincode for keyword search")
                 docsutil.insertImageInDocx(self.document,ss16_location)
 
-                #self.dpms.enterState(state=StateOption)
-                #ss16_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','16',self.driver)
-                #docsutil.addSmallHeading(self.document,"Field Worker selects State from dropdown for keyword search")
-                #docsutil.insertImageInDocx(self.document,ss16_location)
+                self.dpms.enterState(pincode=list(masterSearchTestDataDict[PinCode])[index],state=list(masterSearchTestDataDict[StateOption])[index])
+                ss16_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','16',self.driver)
+                docsutil.addSmallHeading(self.document,"Field Worker selects State from dropdown for keyword search")
+                docsutil.insertImageInDocx(self.document,ss16_location)
 
-                #self.dpms.enterDistrict(district=DistrictOption)
-                #ss17_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','17',self.driver)
-                #docsutil.addSmallHeading(self.document,"Field Worker selects District from dropdown for keyword search")
-                #docsutil.insertImageInDocx(self.document,ss17_location)
+                self.dpms.enterDistrict(pincode=list(masterSearchTestDataDict[PinCode])[index],district=list(masterSearchTestDataDict[StateOption])[index])
+                ss17_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','17',self.driver)
+                docsutil.addSmallHeading(self.document,"Field Worker selects District from dropdown for keyword search")
+                docsutil.insertImageInDocx(self.document,ss17_location)
 
                 self.dpms.clickKeywordSearchSearchButton()
                 ss18_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Keyword Search','18',self.driver)
                 docsutil.addSmallHeading(self.document,"Field Worker clicks on search button for keyword search")
                 docsutil.insertImageInDocx(self.document,ss18_location)
-                time.sleep(10)
+                time.sleep(8)
 
                 keywordSearchExtractDataFrame=self.dpms.extractKeywordSearchData(self.driver,self.masterSearch_page_keywordSearch_extract_filepath)
                 self.dpms.validateExtractKeywordSearchData(keywordSearchExtractDataFrame,self.keywordSearchDataExtractFilePath,self.testdatakeywordSearchExcelFilePath,index,str(list(masterSearchTestDataDict[MemberFirstName])[index]),self.testdatakeywordSearchExcelSheetName)
@@ -329,8 +335,7 @@ class Test_002_MasterSearch:
         except Exception as e:
             docsutil.appendContentWithFailColor(self.document,"Test Case - 002 - Test DpWork Master Search Page  - Keyword Search Page")
             raise CustomException(e,sys)
-        
-
+    @pytest.mark.test_phase1
     def test_DpWorkMasterAreYouUpdatedSearch(self, setup):
         try:
             self.logging.info("Test Begins")
@@ -387,7 +392,7 @@ class Test_002_MasterSearch:
                 docsutil.addSmallHeading(self.document,"Field Worker Clicks on Are You Updated Tab")
                 docsutil.insertImageInDocx(self.document,ss04_location)
 
-                self.dpms.enterFCForAreYouUpdated(familyCode=list(masterSearchTestDataDict[AreYouUpdatedFamilyCode])[index])
+                self.dpms.enterFCForAreYouUpdated(familyCode=str(list(masterSearchTestDataDict[AreYouUpdatedFamilyCode])[index]))
                 ss05_location=docsutil.takeAndSaveScreenshotUnique(self.screenshot_location,'DP Work Master Search Page - Are You Updated','05',self.driver)
                 docsutil.addSmallHeading(self.document,"Field Worker enters Family Code for checking are you updated")
                 docsutil.insertImageInDocx(self.document,ss05_location)
@@ -425,3 +430,4 @@ class Test_002_MasterSearch:
         except Exception as e:
             docsutil.appendContentWithFailColor(self.document,"Test Case - 003 - Test DpWork Master Search Page  - Are You Updated Page")
             raise CustomException(e,sys)
+

@@ -708,7 +708,7 @@ class AddToDPNF:
         
     def enterRitwikOneByOne(self,RitwikName):
         for elementIndex in range(len(RitwikName)):
-            self.driver.find_element(By.XPATH,self.text_familyCode_Xpath).send_keys(RitwikName[elementIndex])
+            self.driver.find_element(By.XPATH,self.text_ritwikname_Xpath).send_keys(RitwikName[elementIndex])
             time.sleep(0.5)
         time.sleep(1.2)
 

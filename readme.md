@@ -22,3 +22,5 @@
 
 Example:
 pytest -v -s DPWork_2.O_AutomationTesting/testcases/test_updateSerialNumber_functionality_2_O.py --html=updateSerialNumber.html --alluredir=allure_reports 
+F:\DP_WORK_2.O\DPWork_2.O\allure_reports
+allure serve F:\DP_WORK_2.O\DPWork_2.O\allure_reports

@@ -327,11 +327,9 @@ class DpWorkUpdatePage:
                 elements_text_value=[]
                 for element in PhilMemberName_locators:
                     elements_text=str(element.text).lower().strip().split()
-                    print(elements_text)
                     elements_text_value.append(" ".join(elements_text[:-1]))
 
                 element_dict=dict(zip(elements_text_value,PhilMemberName_locators))
-                print(element_dict)
                 
                 for dict_key_text in element_dict.keys():
                     if dict_key_text == PhilMemberName.lower():
@@ -413,56 +411,59 @@ class DpWorkUpdatePage:
             raise CustomException(e,sys)
         
        
-    def enterPresentAddress(self, presentAddress):
+    def enterPresentAddress(self, presentAddress,checkBox_flag):
         try:
-            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_presentCompleteAddress_Xpath)))
-            self.driver.find_element(By.XPATH, self.text_presentCompleteAddress_Xpath).clear()
-            if len(presentAddress)==0:
-                presentAddress=''
-            self.driver.find_element(By.XPATH, self.text_presentCompleteAddress_Xpath).send_keys(presentAddress)
+            if str(checkBox_flag).lower()=='no':
+                WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_presentCompleteAddress_Xpath)))
+                self.driver.find_element(By.XPATH, self.text_presentCompleteAddress_Xpath).clear()
+                if len(presentAddress)==0:
+                    presentAddress=''
+                self.driver.find_element(By.XPATH, self.text_presentCompleteAddress_Xpath).send_keys(presentAddress)
         except Exception as e:
             raise CustomException(e,sys)
         
-    def enterPresentLandmark(self,presentLandmark):
+    def enterPresentLandmark(self,presentLandmark,checkBox_flag):
         try:
-            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_presentLandmark_Xpath)))
-            self.driver.find_element(By.XPATH, self.text_presentLandmark_Xpath).clear()
-            if len(presentLandmark)==0:
-                presentLandmark=''
-            self.driver.find_element(By.XPATH, self.text_presentLandmark_Xpath).send_keys(presentLandmark)
+            if str(checkBox_flag).lower()=='no':
+                WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_presentLandmark_Xpath)))
+                self.driver.find_element(By.XPATH, self.text_presentLandmark_Xpath).clear()
+                if len(presentLandmark)==0:
+                    presentLandmark=''
+                self.driver.find_element(By.XPATH, self.text_presentLandmark_Xpath).send_keys(presentLandmark)
         except Exception as e:
             raise CustomException(e,sys)
     
 
-    def enterPresentPincode(self,presentPincode):
+    def enterPresentPincode(self,presentPincode,checkBox_flag):
         try:
-            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_presentpinCode_Xpath)))
-            self.driver.find_element(By.XPATH, self.text_presentpinCode_Xpath).clear()
-            if len(presentPincode)==0:
-                presentPincode=''
-            self.driver.find_element(By.XPATH, self.text_presentpinCode_Xpath).send_keys(presentPincode)
+            if str(checkBox_flag).lower()=='no':
+                WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_presentpinCode_Xpath)))
+                self.driver.find_element(By.XPATH, self.text_presentpinCode_Xpath).clear()
+                if len(presentPincode)==0:
+                    presentPincode=''
+                self.driver.find_element(By.XPATH, self.text_presentpinCode_Xpath).send_keys(presentPincode)
         except Exception as e:
             raise CustomException(e,sys)
         
         
-    def enterPresentPostOffice(self,presentPostOffice):
+    def enterPresentPostOffice(self,presentPostOffice,checkBox_flag):
         try:
-            time.sleep(1)
-            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.click_presentpostOffice_Xpath)))
-            if len(presentPostOffice)!=0:
-                self.click_unitil_interactable(self.driver.find_element(By.XPATH, self.click_presentpostOffice_Xpath))
-                time.sleep(2)
-                po_elements=self.driver.find_elements(By.XPATH,self.click_getAllOptionsPresentPostOffice_Xpath)
-                for po_element in po_elements:
-                    if po_element.text.lower()==presentPostOffice.lower():
-                        self.click_unitil_interactable(po_element)
-                        flag=True
-                        break
-                    else:
-                        flag=False
-                if not flag:
-                    self.click_unitil_interactable(po_element[0])
-                return po_element.text.lower()
+            if str(checkBox_flag).lower()=='no':
+                time.sleep(1)
+                WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.click_presentpostOffice_Xpath)))
+                if len(presentPostOffice)!=0:
+                    self.click_unitil_interactable(self.driver.find_element(By.XPATH, self.click_presentpostOffice_Xpath))
+                    time.sleep(2)
+                    po_elements=self.driver.find_elements(By.XPATH,self.click_getAllOptionsPresentPostOffice_Xpath)
+                    for po_element in po_elements:
+                        if po_element.text.lower()==presentPostOffice.lower():
+                            self.click_unitil_interactable(po_element)
+                            flag=True
+                            break
+                        else:
+                            flag=False
+                    if not flag:
+                        self.click_unitil_interactable(po_element[0])
         except Exception as e:
             raise CustomException(e,sys)
         
@@ -476,10 +477,13 @@ class DpWorkUpdatePage:
         except Exception as e:
             raise CustomException(e,sys)
         
-    def clickCheckBoxForPresentAddressSameAsPermanentAddress(self):
+    def clickCheckBoxForPresentAddressSameAsPermanentAddress(self,checkBox_flag):
         try:
-            time.sleep(1)
-            self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_sameAsPermanentAddress_Xpath))
+            if str(checkBox_flag).lower()=='yes':
+                time.sleep(1)
+                self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.click_sameAsPermanentAddress_Xpath))
+            else:
+                pass
         except Exception as e:
             raise CustomException(e,sys)
 

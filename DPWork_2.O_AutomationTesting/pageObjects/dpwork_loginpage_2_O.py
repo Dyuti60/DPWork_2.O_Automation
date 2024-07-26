@@ -19,7 +19,9 @@ class DpWorkLoginPage:
     text_username_csslocator="input[formcontrolname='email']"
     text_password_csslocator="input[formcontrolname='password']"
     button_loginbutton_xpath='//*[@class="login-button dp-primary-btn"]'
-    button_logoutbutton_xpath='//*[@class="d-flex align-items-center cursor-pointer"]'
+    button_logoutbutton_xpath='//*[@class="sidebar-text ml-12" and contains(text(),"Log out")]'
+    text_InvalidEmail_Xpath='//*[contains(text(),"No such user found. Please check your email.")]'
+    text_InvalidCredentials_Xpath='//*[contains(text(),"Invalid credentials. Authentication failed")]'
 
     button_clickMasterSearch_Xpath="//*[contains(text(),'Master Search')]"
     button_update_Xpath="//*[contains(text(),'Update')]"
@@ -111,5 +113,32 @@ class DpWorkLoginPage:
             #WebDriverWait(self.driver,100).until(EC.visibility_of_element_located((By.XPATH, self.button_loginButton_Xpath)))
             time.sleep(1)
             self.click_unitil_interactable(self.driver.find_element(By.XPATH,self.button_update_Xpath))
+        except Exception as e:
+            raise CustomException(e,sys)
+
+    def checkAndReturnUserDetailsOnSuccessfulLogin(self, userRoleName,userRole):
+        fetch_getTextUserDetails_Xpath='//span[@class="sidebar-text ml-12"]'
+        elements=self.driver.find_elements(By.XPATH,fetch_getTextUserDetails_Xpath)
+        Name=elements[0]
+        #Name0, Status1, AccounSettings2, Logout3
+        Status=elements[2]
+        Appearance=elements[1]
+        LogOut=elements[3]
+        if str(userRole).lower()==str(Status.text).lower().strip() and str(userRoleName).lower()==str(Name.text).lower().strip():
+            return True
+        else:
+            return False
+        
+    def errorMessageInvalidCredentials(self):
+        try:
+            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_InvalidCredentials_Xpath)))
+            time.sleep(1)
+        except Exception as e:
+            raise CustomException(e,sys)
+
+    def errorMessageInvalidEmail(self):
+        try:
+            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_InvalidEmail_Xpath)))
+            time.sleep(1)
         except Exception as e:
             raise CustomException(e,sys)

@@ -20,12 +20,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class DpWorkMasterSearchPage:
     #Tab Locator
-    button_clickGlobalSearchTab_Xpath="//*[contains(text(),'Global search')]"
-    button_clickKeywordSearchTab_Xpath="//*[contains(text(),' Keyword search ')]"
-    button_clickAreYouUpdatedTab_Xpath="//*[contains(text(),' Are you updated? ')]"
+    button_clickGlobalSearchTab_Xpath="//*[contains(text(),'Global Search')]"
+    button_clickNameSearchTab_Xpath="//*[contains(text(),'Name Search')]"
+    button_clickKeywordSearchTab_Xpath="//*[contains(text(),'Keyword Search')]"
+    button_clickAreYouUpdatedTab_Xpath="//*[contains(text(),'Are You Updated')]"
     #Global Search Tab fields Locator
-    text_globalSearchByName_Xpath='//*[@class="search-input dp-input-control ng-untouched ng-pristine ng-valid"]'
-    text_globalSearchByNameTouched_Xpath='//*[@class="search-input dp-input-control ng-valid ng-dirty ng-touched"]'
+    text_globalSearchByName_Xpath='//*[contains(@class,"search-input dp-input-control")]'
+    text_globalSearchByNameTouched_Xpath='//*[contains(@class,"search-input dp-input-control")]'
     button_globalSearchByNameClear_Xpath='//*[@class="dp-secondary-btn"]'
     button_globalSearchByNameSearch_Xpath='//*[@class="bprimary dp-primary-btn"]'
     #Keyword Search Tab fields Locator
@@ -35,20 +36,23 @@ class DpWorkMasterSearchPage:
     text_ritwikFirstName_CSSSelector="input[formcontrolname='ritwiki_first_name']"
     text_ritwikMiddleName_CSSSelector="input[formcontrolname='ritwiki_middle_name']"
     text_ritwikLastName_CSSSelector="input[formcontrolname='ritwiki_last_name']"
+    options_getAllRitwikName_Xpath='//*[contains(@id,"mat-option")]'
     text_guardianFirstName_CSSSelector="input[formcontrolname='guardian_first_name']"
     text_guardianMiddleName_CSSSelector="input[formcontrolname='guardian_middle_name']"
     text_guardianLastName_CSSSelector="input[formcontrolname='guardian_last_name']"
-    text_initiationDate_CSSSelector="input[formcontrolname='mship_date']"
+    text_initiationDate_Xpath='//input[contains(@id,"mat-input") and @placeholder="dd/mm/yyyy"]'
     text_address_CSSSelector="input[formcontrolname='address']"
     text_pinCode_CSSSelector="input[formcontrolname='pinCode']"
-    click_stateDropDown_CSSSelector="input[formcontrolname='state_name']"
+    click_stateDropDown_CSSSelector="*[formcontrolname='state_name']"
+    click_getAllOptionsState_Xpath='//*[contains(@id,"mat-option")]'
     select_stateDropDownOption_Xpath='//*[contains(text(),{})]'
-    click_districtDropDown_CSSSelector="input[formcontrolname='district_name']"
-    select_districtDropDownOption_CSSSelector='//*[contains(text(),{})]'
+    click_districtDropDown_CSSSelector="*[formcontrolname='district_name']"
+    click_getAllOptionsDistrict_Xpath='//*[contains(@id,"mat-option")]'
+    select_districtDropDownOption_Xpath='//*[contains(text(),{})]'
     button_keywordSearchClear_Xpath='//*[@class="clearBtn dp-secondary-btn"]'
-    button_keywordSearchSearch_Xpath='//*[@class="bprimary dp-primary-btn"]'
+    button_keywordSearchSearch_Xpath='//*[@class="bprimary dp-primary-btn ng-star-inserted"]'
     #Are you updated Tab fields locator
-    text_enterFCForAreYouUpdated_Xpath='//*[@class="searchInput dp-input-control ng-untouched ng-pristine ng-valid"]'
+    text_enterFCForAreYouUpdated_Xpath='//*[contains(@class,"searchInput dp-input-control")]'
     button_areYouUpdatedSearchClear_Xpath='//*[@class="dp-secondary-btn"]'
     button_areYouUpdatedSearchSearch_Xpath='//*[@class="bprimary dp-primary-btn"]'
 
@@ -249,11 +253,60 @@ class DpWorkMasterSearchPage:
         except Exception as e:
             raise CustomException(e,sys)
         
+    def enterRitwikOneByOne(self,RitwikName):
+        for elementIndex in range(len(RitwikName)):
+            self.driver.find_element(By.CSS_SELECTOR,self.text_ritwikFirstName_CSSSelector).send_keys(RitwikName[elementIndex])
+            time.sleep(0.15)
+        time.sleep(0.5)
+    def enterRitwikName(self,ritwikFirstName, ritwikMiddleName, ritwikLastName):
+        try:
+            if len(ritwikMiddleName)==0:
+                RitwikName=ritwikFirstName+" "+ritwikLastName
+                SearchRitwikName=RitwikName
+            else:
+                RitwikName=ritwikFirstName+" "+ritwikMiddleName+" "+ritwikLastName
+                SearchRitwikName=ritwikFirstName+" "+ritwikMiddleName
+            time.sleep(0.5)
+            flag=False
+            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.text_ritwikFirstName_CSSSelector)))
+            self.driver.find_element(By.CSS_SELECTOR,self.text_ritwikFirstName_CSSSelector).clear()
+            if len(RitwikName)==0:
+                RitwikName=''
+            self.enterRitwikOneByOne(SearchRitwikName)
+            #self.driver.find_element(By.XPATH,self.text_familyCode_Xpath).send_keys(FamilyCode)
+            time.sleep(2)
+            if len(RitwikName)!=0:
+                RitwikName_locators=self.driver.find_elements(By.XPATH,self.options_getAllRitwikName_Xpath)
+                elements_text_value=[]
+                for element in RitwikName_locators:
+                    elements_text=str(element.text).lower().strip().split()
+                    print(elements_text)
+                    elements_text_value.append(" ".join(elements_text[:]))
+                print(elements_text_value)
+                print(RitwikName_locators)
+                print()
+
+                element_dict=dict(zip(elements_text_value,RitwikName_locators))
+                print(element_dict)
+                
+                for dict_key_text in element_dict.keys():
+                    if str(dict_key_text).lower() == RitwikName.lower():
+                        element_dict[dict_key_text].click()
+                        flag=True
+                        break
+                    else:
+                        flag=False
+                if not flag:
+                    assert False, "Not able to fetch Phil Member on entering FC Code"
+                
+        except Exception as e:
+            raise CustomException(e,sys)
+        
     def enterInitiationDate(self, initiationDate):
         try:
-            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.text_initiationDate_CSSSelector)))
-            self.driver.find_element(By.CSS_SELECTOR, self.text_initiationDate_CSSSelector).clear()
-            self.driver.find_element(By.CSS_SELECTOR, self.text_initiationDate_CSSSelector).send_keys(initiationDate)
+            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_initiationDate_Xpath)))
+            self.driver.find_element(By.XPATH, self.text_initiationDate_Xpath).clear()
+            self.driver.find_element(By.XPATH, self.text_initiationDate_Xpath).send_keys(initiationDate)
         except Exception as e:
             raise CustomException(e,sys)
 
@@ -273,19 +326,63 @@ class DpWorkMasterSearchPage:
         except Exception as e:
             raise CustomException(e,sys)
     
-    def enterState(self, state):
+    def enterState(self, pincode,state):
         try:
-            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.click_stateDropDown_CSSSelector)))
-            self.click_unitil_interactable(self.driver.find_element(By.CSS_SELECTOR,self.click_stateDropDown_CSSSelector))
-            self.click_unitil_interactable(self.driver.find_element(By.XPATH, self.select_stateDropDownOption_Xpath.format(state)))
+            if len(pincode)==0:
+                #WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.click_stateDropDown_CSSSelector)))
+                #self.click_unitil_interactable(self.driver.find_element(By.CSS_SELECTOR,self.click_stateDropDown_CSSSelector))
+                #self.click_unitil_interactable(self.driver.find_element(By.XPATH, self.select_stateDropDownOption_Xpath.format(state)))
+
+                time.sleep(1)
+                WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.click_stateDropDown_CSSSelector)))
+                if len(state)!=0:
+                    flag=False
+                    self.click_unitil_interactable(self.driver.find_element(By.CSS_SELECTOR, self.click_stateDropDown_CSSSelector))
+                    time.sleep(2)
+                    state_elements=self.driver.find_elements(By.XPATH,self.click_getAllOptionsState_Xpath)
+                    for state_element in state_elements:
+                        if str(state_element.text).strip().lower()==state.lower():
+                            self.click_unitil_interactable(state_element)
+                            flag=True
+                            break
+                        else:
+                            flag=False
+                    if not flag:
+                        self.click_unitil_interactable(state_element[0])
+
+
         except Exception as e:
             raise CustomException(e,sys)
 
-    def enterDistrict(self, district):
+    def enterDistrict(self, pincode,district):
         try:
-            WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.click_districtDropDown_CSSSelector)))
-            self.click_unitil_interactable(self.driver.find_element(By.CSS_SELECTOR,self.click_districtDropDown_CSSSelector))
-            self.click_unitil_interactable(self.driver.find_element(By.XPATH, self.select_districtDropDownOption_CSSSelector.format(district)))
+            if len(pincode)==0:
+                #WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.click_districtDropDown_CSSSelector)))
+                #self.click_unitil_interactable(self.driver.find_element(By.CSS_SELECTOR,self.click_districtDropDown_CSSSelector))
+                #self.click_unitil_interactable(self.driver.find_element(By.XPATH, self.select_districtDropDownOption_CSSSelector.format(district)))
+                time.sleep(1)
+                WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.CSS_SELECTOR, self.click_districtDropDown_CSSSelector)))
+                if len(district)!=0:
+                    flag=False
+                    self.click_unitil_interactable(self.driver.find_element(By.CSS_SELECTOR, self.click_districtDropDown_CSSSelector))
+                    time.sleep(2)
+                    self.click_unitil_interactable(self.driver.find_element(By.XPATH, self.select_districtDropDownOption_Xpath.format(str(district).upper())))
+                    time.sleep(2)
+
+                    #district_elements=self.driver.find_elements(By.XPATH,self.click_getAllOptionsDistrict_Xpath)
+                    #for district_element in district_elements:
+                    #    print(str(district_element.text).strip().lower())
+                    #    print()
+                    #    print(str(district).lower())
+                    #    if str(district_element.text).strip().lower()==str(district).lower():
+                    #        self.click_unitil_interactable(district_element)
+                    #        flag=True
+                    #        break
+                    #    else:
+                    #        flag=False
+                    #if not flag:
+                    #    self.click_unitil_interactable(district_element[0])
+
         except Exception as e:
             raise CustomException(e,sys)
         
@@ -364,11 +461,21 @@ class DpWorkMasterSearchPage:
         except Exception as e:
             raise CustomException(e,sys)
         
+    def enterFamilycodeOneByOne(self,Familycode):
+        length=12-len(Familycode)
+        string='0'*length
+        self.driver.find_element(By.XPATH,self.text_enterFCForAreYouUpdated_Xpath).send_keys(string)
+        for elementIndex in str(Familycode):
+            self.driver.find_element(By.XPATH,self.text_enterFCForAreYouUpdated_Xpath).send_keys(elementIndex)
+            time.sleep(0.3)
+        time.sleep(1.5)
+
     def enterFCForAreYouUpdated(self,familyCode):
         try:
             WebDriverWait(self.driver,15).until(EC.presence_of_element_located((By.XPATH, self.text_enterFCForAreYouUpdated_Xpath)))
             self.driver.find_element(By.XPATH, self.text_enterFCForAreYouUpdated_Xpath).clear()
-            self.driver.find_element(By.XPATH, self.text_enterFCForAreYouUpdated_Xpath).send_keys(familyCode)
+            self.enterFamilycodeOneByOne(familyCode)
+            #self.driver.find_element(By.XPATH, self.text_enterFCForAreYouUpdated_Xpath).send_keys(familyCode)
         except Exception as e:
             raise CustomException(e,sys)
         

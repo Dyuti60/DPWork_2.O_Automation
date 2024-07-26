@@ -19,7 +19,7 @@ from configurations.constants import *
 
 #hi=priyam.baidya.rs@gmail.com
 #nvpzchqmzngpcxpc
-class Test_001_ForgotPassword:
+class Test_ForgotPassword:
     
     dot_env_filepath=os.getcwd()+'\\'+projectName+dot_env_file
     dpwork_url=readConfig.getDpWorkUrl()
@@ -48,7 +48,7 @@ class Test_001_ForgotPassword:
 
     login_page_logs_attachment_filepath=os.getcwd()+"\\logs\\"+log_file+"\\"+log_file
     forgetPassword_testData_FilePath=os.getcwd()+"\\DPWork_2.O_AutomationTesting\\testdata\\"+forgetPassword_testData_file
-    
+    @pytest.mark.test_phase1
     def test_forgotPassword(self,setup):
         try:
             self.driver=setup
