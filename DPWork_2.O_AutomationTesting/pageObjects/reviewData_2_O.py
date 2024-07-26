@@ -15,6 +15,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 class ReviewData:
+    button_clickReviewData_Xpath='//*[]'
+
     check_reviewDataTitleText_Xpath='//span[@class="ng-star-inserted" and contains(text(),"Review data")]'
     check_allCountryNavigationText_Xpath='//span[@class="eachBread" and contains(text(),"All countries")]'
     check_IndiaNavigationText_Xpath='//span[@class="eachBread ng-star-inserted" and contains(text(),"India")]'
